@@ -1,0 +1,17 @@
+# Environment variables - never commit this
+.env
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Large data files - never commit to GitHub
+ingestion/*.csv
+ingestion/*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
