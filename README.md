@@ -165,7 +165,7 @@ python ingestion/ingest_partd.py
  
 ## Certifications
  
-- ✅ [Snowflake Badge 1: Data Warehousing Workshop]([https://www.credly.com](https://achieve.snowflake.com/79651a1f-079a-424f-b714-10123ca48425#acc.REHfn6XP)) — April 2026
+- ✅ [Snowflake Badge 1: Data Warehousing Workshop](https://achieve.snowflake.com/79651a1f-079a-424f-b714-10123ca48425#acc.REHfn6XP) — April 2026
 - ⬜ Snowflake Badge 2: Collaboration, Marketplace & Cost Estimation — planned Week 7
 - ⬜ SnowPro Core COF-C03 — planned Week 8
 ---
