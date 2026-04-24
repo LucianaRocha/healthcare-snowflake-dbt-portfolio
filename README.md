@@ -1,36 +1,36 @@
 # Healthcare Analytics Pipeline
-### CMS Medicare Data → Python/S3 → Snowflake → dbt → Tableau
- 
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+### CMS Medicare Data → Python → AWS S3 → Snowflake → dbt → Tableau
+
+![Status](https://img.shields.io/badge/status-active%20development-success)
 ![Snowflake](https://img.shields.io/badge/Snowflake-29B5E8?logo=snowflake&logoColor=white)
 ![dbt](https://img.shields.io/badge/dbt-FF694B?logo=dbt&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS%20S3-232F3E?logo=amazonaws&logoColor=white)
 ![Tableau](https://img.shields.io/badge/Tableau-E97627?logo=tableau&logoColor=white)
- 
+
 ---
- 
+
 ## Executive Summary
- 
+
 Production-style healthcare analytics pipeline built with **real CMS Medicare datasets** and a modern cloud data stack.
 
-This portfolio project demonstrates how enterprise healthcare data can be ingested, stored, transformed, tested, modeled, and visualized using tools widely requested in the market:
+This portfolio project demonstrates how enterprise healthcare data can be ingested, stored, transformed, tested, modeled, and visualized using tools widely requested in today’s market:
 
-- Snowflake  
-- Python  
-- AWS S3  
-- dbt  
-- SQL  
-- Tableau  
-- GitHub  
+- Snowflake
+- Python
+- AWS S3
+- dbt
+- SQL
+- Tableau
+- GitHub
 
 Designed to showcase hands-on capability for:
 
-- Senior BI Developer roles  
-- Analytics Engineer roles  
-- Data Engineer roles  
-- Healthcare / Pharma Data roles  
- 
+- Senior BI Developer roles
+- Analytics Engineer roles
+- Data Engineer roles
+- Healthcare / Pharma Data roles
+
 ---
 
 ## Project Metrics
@@ -40,6 +40,7 @@ Designed to showcase hands-on capability for:
 - **3-layer Snowflake architecture** (`RAW`, `STAGING`, `MARTS`)
 - **5+ integrated technologies** across the pipeline
 - **End-to-end ELT workflow** from ingestion to dashboarding
+- **Real business use case** in healthcare analytics
 
 ---
 
@@ -53,171 +54,204 @@ Healthcare organizations need reliable analytics pipelines to answer questions s
 - Which states have the highest prescriber concentration?
 - How do hospital quality metrics compare geographically?
 
-This project simulates a real analytics environment solving those business problems.
+This project simulates a real analytics environment focused on business decision-making.
 
 ---
 
- 
 ## Architecture
 
-> Architecture image will be added in `/docs/architecture.png`
+> Add architecture image in `/docs/architecture.png`
 
-```text id="q72f0v"
-CMS Medicare CSV Files
-        │
-        ▼
-Python Ingestion Layer
-(pandas + boto3)
-        │
-        ▼
-AWS S3 Landing Zone
-        │
-        ▼
-Snowflake RAW Schema
-(COPY INTO)
-        │
-        ▼
-dbt Staging Models
-(cleaning / standardization)
-        │
-        ▼
-dbt Mart Models
-(analytics-ready outputs)
-        │
-        ▼
-Tableau Public Dashboard
-```
- 
+    CMS Medicare CSV Files
+            │
+            ▼
+    Python Ingestion Layer
+    (pandas + boto3)
+            │
+            ▼
+    AWS S3 Landing Zone
+            │
+            ▼
+    Snowflake RAW Schema
+    (COPY INTO)
+            │
+            ▼
+    dbt Staging Models
+    (cleaning / standardization)
+            │
+            ▼
+    dbt Mart Models
+    (analytics-ready outputs)
+            │
+            ▼
+    Tableau Public Dashboard
+
 ---
- 
+
 ## Data Sources
- 
+
 | Dataset | Source | Format | Description |
 |---|---|---|---|
 | Medicare Part D Prescribers | [CMS data.gov](https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/medicare-part-d-prescribers-by-provider-and-drug) | CSV | Prescription drugs prescribed by providers, paid under Medicare Part D. Organized by NPI, drug name, total fills, and total cost. |
 | Hospital General Information | [CMS Provider Data](https://data.cms.gov/provider-data/dataset/ynj2-r877) | CSV | ~6,000 US hospitals with star ratings, ownership type, readmission rates, and patient experience scores. |
- 
+
 ---
- 
+
 ## Tech Stack
- 
+
 | Layer | Tool | Purpose |
 |---|---|---|
-| Ingestion | Python (pandas, boto3) | Read CSV, clean, upload to S3 |
-| Cloud Storage | AWS S3 (us-west-2) | Raw file landing zone |
-| Data Warehouse | Snowflake (Enterprise) | Storage, compute, and serving layer |
-| Transformation | dbt | Staging and mart model layers with tests |
-| Visualization | Tableau Public | Dashboard published publicly |
-| Version Control | GitHub | All code and documentation |
- 
+| Data Source | CMS Medicare Data | Real healthcare source data |
+| Ingestion | Python, pandas, boto3 | Read, clean, upload files |
+| Cloud Storage | AWS S3 | Raw landing zone |
+| Data Warehouse | Snowflake | Storage, compute, analytics serving |
+| Transformation | dbt | Models, tests, documentation |
+| Visualization | Tableau Public | Dashboard publishing |
+| Version Control | GitHub | Code and documentation |
+
 ---
- 
-## Repository Structure
- 
-```
-healthcare-snowflake-dbt-portfolio/
-│
-├── ingestion/
-│   ├── ingest_partd.py          # Main ingestion script
-│   └── requirements.txt         # Python dependencies
-│
-├── dbt/
-│   ├── models/
-│   │   ├── staging/             # stg_partd_prescribers.sql, stg_hospitals.sql
-│   │   └── marts/               # mart_drug_spend.sql, mart_top_prescribers.sql
-│   ├── tests/
-│   └── dbt_project.yml
-│
-├── docs/
-│   ├── architecture.png         # Architecture diagram (added Week 4)
-│   └── schema.sql               # RAW layer data dictionary
-│
-└── README.md
-```
- 
----
- 
+
 ## Snowflake Schema Design
- 
-```
-HEALTHCARE_DB
-├── RAW
-│   ├── PARTD_PRESCRIBERS        # CMS Part D raw data
-│   └── HOSPITALS                # CMS Hospital Quality raw data
-├── STAGING
-│   ├── STG_PARTD_PRESCRIBERS
-│   └── STG_HOSPITALS
-└── MARTS
-    ├── MART_DRUG_SPEND_BY_SPECIALTY
-    ├── MART_HOSPITAL_QUALITY
-    └── MART_TOP_PRESCRIBERS
-```
- 
+
+    HEALTHCARE_DB
+
+    ├── RAW
+    │   ├── PARTD_PRESCRIBERS
+    │   └── HOSPITALS
+
+    ├── STAGING
+    │   ├── STG_PARTD_PRESCRIBERS
+    │   └── STG_HOSPITALS
+
+    └── MARTS
+        ├── MART_DRUG_SPEND_BY_SPECIALTY
+        ├── MART_HOSPITAL_QUALITY
+        └── MART_TOP_PRESCRIBERS
+
 ---
- 
+
+## Repository Structure
+
+    healthcare-snowflake-dbt-portfolio/
+
+    ├── ingestion/
+    │   ├── ingest_partd.py
+    │   └── requirements.txt
+
+    ├── dbt/
+    │   ├── models/
+    │   │   ├── staging/
+    │   │   └── marts/
+    │   └── dbt_project.yml
+
+    ├── docs/
+    │   ├── architecture.png
+    │   └── schema.sql
+
+    └── README.md
+
+---
+
 ## How to Run the Ingestion Pipeline
- 
-> Full instructions coming in Week 3 — will be updated here.
- 
-**Prerequisites:**
+
+### Prerequisites
+
 - Python 3.9+
-- AWS account with S3 bucket in us-west-2
-- Snowflake account (Enterprise)
-- Environment variables set (see below)
-**Environment variables required:**
-```bash
-export AWS_ACCESS_KEY_ID=your_key
-export AWS_SECRET_ACCESS_KEY=your_secret
-export SNOWFLAKE_ACCOUNT=your_account
-export SNOWFLAKE_USER=your_user
-export SNOWFLAKE_PASSWORD=your_password
-export SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-export SNOWFLAKE_DATABASE=HEALTHCARE_DB
-export SNOWFLAKE_SCHEMA=RAW
-```
- 
-**Run:**
-```bash
-pip install -r ingestion/requirements.txt
-python ingestion/ingest_partd.py
-```
- 
+- AWS account
+- S3 bucket in `us-west-2`
+- Snowflake account
+- Access credentials configured as environment variables
+
+### Environment Variables
+
+    export AWS_ACCESS_KEY_ID=your_key
+    export AWS_SECRET_ACCESS_KEY=your_secret
+    export SNOWFLAKE_ACCOUNT=your_account
+    export SNOWFLAKE_USER=your_user
+    export SNOWFLAKE_PASSWORD=your_password
+    export SNOWFLAKE_WAREHOUSE=COMPUTE_WH
+    export SNOWFLAKE_DATABASE=HEALTHCARE_DB
+    export SNOWFLAKE_SCHEMA=RAW
+
+### Install Dependencies
+
+    pip install -r ingestion/requirements.txt
+
+### Run Pipeline
+
+    python ingestion/ingest_partd.py
+
 ---
- 
-## dbt Models
- 
-> dbt models and documentation coming in Week 5-6.
- 
+
+## Example Analytics Outputs
+
+### Financial Analytics
+
+- Total Medicare spend by drug class
+- Cost-per-claim trends
+- High-cost provider segments
+
+### Operational Analytics
+
+- Top prescribers by specialty
+- State-level provider density
+- Hospital benchmarking
+
+### Executive Reporting
+
+- KPI scorecards
+- Geographic dashboards
+- Trend analysis
+- Ranking views
+
 ---
- 
-## Tableau Dashboard
- 
-> Dashboard published to Tableau Public in Week 6 — link will be added here.
- 
----
- 
+
 ## Project Status
- 
-| Week | Focus | Status |
+
+| Phase | Deliverable | Status |
 |---|---|---|
-| 1–2 | Snowflake Foundation + Badge 1 | ✅ Complete |
-| 3–4 | Python ingestion + GitHub setup | 🔄 In progress |
-| 5–6 | dbt + Tableau | ⬜ Pending |
-| 7–8 | SnowPro Core COF-C03 exam prep | ⬜ Pending |
- 
+| Snowflake Foundation | Badge 1 completed | ✅ |
+| Python + AWS S3 Ingestion | In progress | 🔄 |
+| dbt Modeling Layer | Planned | ⬜ |
+| Tableau Dashboard | Planned | ⬜ |
+| SnowPro Core COF-C03 | Planned | ⬜ |
+
 ---
- 
+
 ## Certifications
- 
-- ✅ [Snowflake Badge 1: Data Warehousing Workshop](https://achieve.snowflake.com/79651a1f-079a-424f-b714-10123ca48425#acc.REHfn6XP) — April 2026
-- ⬜ Snowflake Badge 2: Collaboration, Marketplace & Cost Estimation — planned Week 7
-- ⬜ SnowPro Core COF-C03 — planned Week 8
+
+- ✅ Snowflake Badge 1: Data Warehousing Workshop
+- ⬜ Snowflake Badge 2: Collaboration, Marketplace & Cost Estimation
+- ⬜ SnowPro Core COF-C03
+
 ---
- 
-## Background
- 
-Built by a healthcare/pharma analytics professional with 20+ years of experience (Roche, Wyeth) transitioning into cloud data engineering. This project was designed to demonstrate hands-on proficiency with the modern data stack that the market is asking for: Snowflake + dbt + Python + cloud storage.
- 
+
+## Professional Background
+
+Built by a healthcare/pharma analytics professional with 20+ years of industry experience including Roche and Wyeth, transitioning into cloud data engineering and modern analytics architecture.
+
+This combination of domain expertise + technical execution creates strong value for healthcare, pharma, and analytics teams.
+
 ---
- 
-*This repository is under active development. Last updated: April 2026.*
+
+## Opportunities
+
+Open to opportunities involving:
+
+- Snowflake
+- BI Development
+- Analytics Engineering
+- Data Engineering
+- Healthcare Analytics
+
+---
+
+## Why This Project Matters
+
+Many portfolio projects use toy datasets.
+
+This project uses **real healthcare data**, enterprise cloud tools, modern warehousing concepts, and business reporting scenarios that reflect real analytics work.
+
+---
+
+*Repository under active development. Last updated: April 2026.*
