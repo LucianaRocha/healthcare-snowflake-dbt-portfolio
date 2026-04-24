@@ -10,31 +10,37 @@
  
 ---
  
-## Overview
+## Executive Summary
  
-End-to-end cloud analytics pipeline built on public CMS Medicare Part D prescriber data — the same dataset type used daily in pharma and payer analytics. This project demonstrates a full modern data stack: Python ingestion, cloud staging on AWS S3, Snowflake data warehouse, dbt transformation layers with tests and documentation, and a Tableau Public dashboard.
- 
-Built as a portfolio project targeting **Senior BI Developer** and **Data Engineer** roles in healthcare and pharma.
+Production-style healthcare analytics pipeline built with **real CMS Medicare datasets** and a modern cloud data stack.
 
-Production-style healthcare analytics pipeline built with a modern cloud data stack using **public CMS Medicare datasets**.
+This portfolio project demonstrates how enterprise healthcare data can be ingested, stored, transformed, tested, modeled, and visualized using tools widely requested in the market:
 
-This project demonstrates how raw large-scale healthcare data can be ingested, staged, transformed, tested, modeled, and visualized using tools commonly requested in today's market:
-
-- Snowflake
-- Python
-- AWS S3
-- dbt
-- Tableau
-- SQL
-- GitHub
+- Snowflake  
+- Python  
+- AWS S3  
+- dbt  
+- SQL  
+- Tableau  
+- GitHub  
 
 Designed to showcase hands-on capability for:
 
 - Senior BI Developer roles  
 - Analytics Engineer roles  
 - Data Engineer roles  
-- Healthcare / Pharma Data roles
+- Healthcare / Pharma Data roles  
  
+---
+
+## Project Metrics
+
+- **3.61 GB** CMS Medicare Part D source file
+- **Multi-million row** public healthcare dataset
+- **3-layer Snowflake architecture** (`RAW`, `STAGING`, `MARTS`)
+- **5+ integrated technologies** across the pipeline
+- **End-to-end ELT workflow** from ingestion to dashboarding
+
 ---
 
 ## Business Problem
@@ -43,40 +49,43 @@ Healthcare organizations need reliable analytics pipelines to answer questions s
 
 - Which drug categories drive the highest Medicare spend?
 - Which provider specialties generate the most claims?
-- How does cost-per-claim trend over time?
-- Which states have highest prescriber concentration?
+- How is cost-per-claim trending over time?
+- Which states have the highest prescriber concentration?
 - How do hospital quality metrics compare geographically?
 
-This project simulates a real analytics environment solving those problems.
+This project simulates a real analytics environment solving those business problems.
 
 ---
 
  
 ## Architecture
- 
-> Architecture diagram coming in Week 4 — will be added here.
- 
-```
-CMS Medicare CSV
-      │
-      ▼
-Python (pandas + boto3)
-      │  ── light cleaning, snake_case columns
-      ▼
-AWS S3 (us-west-2)
-      │  ── external stage
-      ▼
-Snowflake RAW layer
-      │  ── COPY INTO
-      ▼
-dbt Staging models
-      │  ── type casting, renaming, timestamps
-      ▼
-dbt Mart models
-      │  ── business aggregations
-      ▼
+
+> Architecture image will be added in `/docs/architecture.png`
+
+```text id="q72f0v"
+CMS Medicare CSV Files
+        │
+        ▼
+Python Ingestion Layer
+(pandas + boto3)
+        │
+        ▼
+AWS S3 Landing Zone
+        │
+        ▼
+Snowflake RAW Schema
+(COPY INTO)
+        │
+        ▼
+dbt Staging Models
+(cleaning / standardization)
+        │
+        ▼
+dbt Mart Models
+(analytics-ready outputs)
+        │
+        ▼
 Tableau Public Dashboard
-```
  
 ---
  
