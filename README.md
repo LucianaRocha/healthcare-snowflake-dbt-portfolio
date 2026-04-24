@@ -17,6 +17,21 @@ End-to-end cloud analytics pipeline built on public CMS Medicare Part D prescrib
 Built as a portfolio project targeting **Senior BI Developer** and **Data Engineer** roles in healthcare and pharma.
  
 ---
+
+# Business Problem
+
+Healthcare organizations need reliable analytics pipelines to answer questions such as:
+
+- Which drug categories drive the highest Medicare spend?
+- Which provider specialties generate the most claims?
+- How does cost-per-claim trend over time?
+- Which states have highest prescriber concentration?
+- How do hospital quality metrics compare geographically?
+
+This project simulates a real analytics environment solving those problems.
+
+---
+
  
 ## Architecture
  
