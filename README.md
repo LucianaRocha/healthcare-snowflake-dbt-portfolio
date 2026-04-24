@@ -95,6 +95,24 @@ This project simulates a real analytics environment focused on business decision
 | Medicare Part D Prescribers | [CMS data.gov](https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/medicare-part-d-prescribers-by-provider-and-drug) | CSV | Prescription drugs prescribed by providers, paid under Medicare Part D. Organized by NPI, drug name, total fills, and total cost. |
 | Hospital General Information | [CMS Provider Data](https://data.cms.gov/provider-data/dataset/ynj2-r877) | CSV | ~6,000 US hospitals with star ratings, ownership type, readmission rates, and patient experience scores. |
 
+### 1. Medicare Part D Prescribers
+
+Provider-level prescription activity including:
+
+- Drug name
+- Total claims
+- Total fills
+- Total drug cost
+- Prescriber identifiers
+
+### 2. Hospital General Information
+
+- Star ratings
+- Ownership type
+- Readmission metrics
+- Patient experience indicators
+- Geographic data
+
 ---
 
 ## Tech Stack
