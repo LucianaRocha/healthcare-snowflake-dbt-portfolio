@@ -15,10 +15,29 @@
 End-to-end cloud analytics pipeline built on public CMS Medicare Part D prescriber data — the same dataset type used daily in pharma and payer analytics. This project demonstrates a full modern data stack: Python ingestion, cloud staging on AWS S3, Snowflake data warehouse, dbt transformation layers with tests and documentation, and a Tableau Public dashboard.
  
 Built as a portfolio project targeting **Senior BI Developer** and **Data Engineer** roles in healthcare and pharma.
+
+Production-style healthcare analytics pipeline built with a modern cloud data stack using **public CMS Medicare datasets**.
+
+This project demonstrates how raw large-scale healthcare data can be ingested, staged, transformed, tested, modeled, and visualized using tools commonly requested in today's market:
+
+- Snowflake
+- Python
+- AWS S3
+- dbt
+- Tableau
+- SQL
+- GitHub
+
+Designed to showcase hands-on capability for:
+
+- Senior BI Developer roles  
+- Analytics Engineer roles  
+- Data Engineer roles  
+- Healthcare / Pharma Data roles
  
 ---
 
-# Business Problem
+## Business Problem
 
 Healthcare organizations need reliable analytics pipelines to answer questions such as:
 
