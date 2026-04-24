@@ -9,9 +9,14 @@ __pycache__/
 *.pyc
 
 # Large data files - never commit to GitHub
-ingestion/*.csv
-ingestion/*.zip
+data/*.csv
+data/*.zip
+
+data/
+*.csv
+.env
 
 # OS files
 .DS_Store
 Thumbs.db
+
