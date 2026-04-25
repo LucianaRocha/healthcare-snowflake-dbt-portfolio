@@ -46,6 +46,15 @@ Designed to showcase hands-on capability for:
 
 ---
 
+## Current Results
+
+- 26.79M Part D rows loaded successfully
+- 6K+ hospitals loaded successfully
+- Dynamic ingestion pipeline supports multiple datasets
+- Snowflake RAW layer complete
+
+---
+
 ## Business Problem
 
 Healthcare organizations need reliable analytics pipelines to answer questions such as:
