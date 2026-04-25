@@ -1,6 +1,7 @@
 import os
 import boto3
 import snowflake.connector
+
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -15,7 +16,6 @@ def load_config():
         "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
         "AWS_REGION": os.getenv("AWS_REGION"),
         "S3_BUCKET_NAME": os.getenv("S3_BUCKET_NAME"),
-        "S3_FOLDER": os.getenv("S3_FOLDER"),
 
         # Local file
         "LOCAL_FILE_PATH": os.getenv("LOCAL_FILE_PATH"),
@@ -40,12 +40,12 @@ def validate_config(config):
             f"Missing required environment variables: {', '.join(missing_vars)}"
         )
 
-def validate_local_file(file_path):
-    """Validate that the local source file exists and is a CSV."""
-    path = Path(file_path)
+def validate_local_file(base_folder, file_name):
+    """Validate that the selected dataset file exists and is a CSV."""
+    path = Path(base_folder) / file_name
 
     if not path.exists():
-        raise FileNotFoundError(f"Local file not found: {file_path}")
+        raise FileNotFoundError(f"Local file not found: {path}")
 
     if path.suffix.lower() != ".csv":
         raise ValueError(f"Expected a CSV file, but got: {path.suffix}")
@@ -55,12 +55,12 @@ def validate_local_file(file_path):
     print(f"Local file found: {path}")
     print(f"File size: {file_size_gb:.2f} GB")
 
-    return path        
+    return path   
 
-def upload_file_to_s3(local_file_path, config):
-    """Upload the local CSV file to the configured S3 bucket and folder."""
+def upload_file_to_s3(local_file_path, s3_folder, config):
+    """Upload the local CSV file to the selected S3 dataset folder."""
     file_name = local_file_path.name
-    s3_key = f"{config['S3_FOLDER']}/{file_name}"
+    s3_key = f"{s3_folder}/{file_name}"
 
     print(f"Uploading file to S3: s3://{config['S3_BUCKET_NAME']}/{s3_key}")
 
@@ -79,7 +79,7 @@ def upload_file_to_s3(local_file_path, config):
 
     print("File uploaded to S3 successfully.")
 
-    return s3_key    
+    return s3_key  
 
 def connect_to_snowflake(config):
     """Create Snowflake connection."""
@@ -142,13 +142,13 @@ def set_snowflake_context(conn, config):
         cursor.close()
 
 
-def create_snowflake_file_format(conn):
-    """Create CSV file format for staged CMS Part D data."""
+def create_snowflake_file_format(conn, file_format_name):
+    """Create CSV file format for staged CMS data."""
     cursor = conn.cursor()
 
     try:
-        cursor.execute("""
-            CREATE OR REPLACE FILE FORMAT PARTD_CSV_FORMAT
+        cursor.execute(f"""
+            CREATE OR REPLACE FILE FORMAT {file_format_name}
             TYPE = CSV
             FIELD_DELIMITER = ','
             SKIP_HEADER = 1
@@ -158,29 +158,30 @@ def create_snowflake_file_format(conn):
             ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE
         """)
 
-        print("Snowflake file format created successfully.")
+        print(f"Snowflake file format {file_format_name} created successfully.")
 
     finally:
         cursor.close()
 
-def create_snowflake_stage(conn, config):
-    """Create external stage pointing to the S3 folder."""
+def create_snowflake_stage(conn, config, stage_name, s3_folder, file_format_name):
+    """Create external Snowflake stage for the selected dataset."""
     cursor = conn.cursor()
 
     try:
         cursor.execute(f"""
-            CREATE OR REPLACE STAGE PARTD_S3_STAGE
-            URL = 's3://{config["S3_BUCKET_NAME"]}/{config["S3_FOLDER"]}/'
+            CREATE OR REPLACE STAGE {stage_name}
+            URL = 's3://{config["S3_BUCKET_NAME"]}/{s3_folder}/'
             CREDENTIALS = (
                 AWS_KEY_ID = '{config["AWS_ACCESS_KEY_ID"]}'
                 AWS_SECRET_KEY = '{config["AWS_SECRET_ACCESS_KEY"]}'
             )
-            FILE_FORMAT = PARTD_CSV_FORMAT
+            FILE_FORMAT = {file_format_name}
         """)
-        print("Snowflake external stage created successfully.")
+
+        print(f"Snowflake external stage {stage_name} created successfully.")
 
     finally:
-        cursor.close()       
+        cursor.close()
 
 def create_raw_partd_table(conn):
     """Create RAW.PARTD_PRESCRIBERS table with explicit CMS Part D schema."""
@@ -218,6 +219,39 @@ def create_raw_partd_table(conn):
 
     finally:
         cursor.close()   
+
+def create_raw_hospital_table(conn):
+    """Create RAW.HOSPITAL_GENERAL_INFO table with explicit CMS Hospital schema."""
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            CREATE OR REPLACE TABLE HOSPITAL_GENERAL_INFO (
+                FACILITY_ID STRING,
+                FACILITY_NAME STRING,
+                ADDRESS STRING,
+                CITY_TOWN STRING,
+                STATE STRING,
+                ZIP_CODE STRING,
+                COUNTY_PARISH STRING,
+                TELEPHONE_NUMBER STRING,
+                MEASURE_ID STRING,
+                MEASURE_NAME STRING,
+                COMPARED_TO_NATIONAL STRING,
+                DENOMINATOR NUMBER,
+                SCORE STRING,
+                LOWER_ESTIMATE FLOAT,
+                HIGHER_ESTIMATE FLOAT,
+                FOOTNOTE STRING,
+                START_DATE DATE,
+                END_DATE DATE
+            )
+        """)
+
+        print("RAW table HOSPITAL_GENERAL_INFO created successfully.")
+
+    finally:
+        cursor.close()        
 
 def copy_into_partd_table(conn):
     """Load staged CMS Part D CSV data into RAW.PARTD_PRESCRIBERS."""
@@ -261,6 +295,43 @@ def copy_into_partd_table(conn):
     finally:
         cursor.close()
 
+def copy_into_hospital_table(conn):
+    """Load staged CMS Hospital CSV data into RAW.HOSPITAL_GENERAL_INFO."""
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            COPY INTO HOSPITAL_GENERAL_INFO
+            FROM (
+                SELECT
+                    $1::STRING,
+                    $2::STRING,
+                    $3::STRING,
+                    $4::STRING,
+                    $5::STRING,
+                    $6::STRING,
+                    $7::STRING,
+                    $8::STRING,
+                    $9::STRING,
+                    $10::STRING,
+                    $11::STRING,
+                    TRY_TO_NUMBER($12),
+                    $13::STRING,
+                    TRY_TO_DOUBLE($14),
+                    TRY_TO_DOUBLE($15),
+                    $16::STRING,
+                    TRY_TO_DATE($17),
+                    TRY_TO_DATE($18)
+                FROM @HOSPITAL_S3_STAGE
+            )
+            FILE_FORMAT = (FORMAT_NAME = HOSPITAL_CSV_FORMAT)
+            ON_ERROR = CONTINUE
+        """)
+
+        print("COPY INTO HOSPITAL_GENERAL_INFO completed successfully.")
+
+    finally:
+        cursor.close()
 
 def validate_partd_row_count(conn):
     """Validate row count after loading data."""
@@ -273,29 +344,73 @@ def validate_partd_row_count(conn):
         print(f"PARTD_PRESCRIBERS row count: {row_count:,}")
 
     finally:
-        cursor.close()        
+        cursor.close()    
+
+def validate_hospital_row_count(conn):
+    """Validate row count after loading hospital data."""
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT COUNT(*) FROM HOSPITAL_GENERAL_INFO")
+        row_count = cursor.fetchone()[0]
+
+        print(f"HOSPITAL_GENERAL_INFO row count: {row_count:,}")
+
+    finally:
+        cursor.close()            
 
 
 def main():
-    print("Starting Part D ingestion script...")
+    print("Starting healthcare ingestion script...")
+
+    SELECTED_DATASET = "hospital"  # change to "hospital" later
+
+    DATASETS = {
+        "partd": {
+            "file_name": "partd_prescribers_2023.csv",
+            "s3_folder": "partd-prescribers",
+            "file_format": "PARTD_CSV_FORMAT",
+            "stage_name": "PARTD_S3_STAGE",
+        },
+        "hospital": {
+            "file_name": "hospital_general_information.csv",
+            "s3_folder": "hospital-quality",
+            "file_format": "HOSPITAL_CSV_FORMAT",
+            "stage_name": "HOSPITAL_S3_STAGE",
+        },
+    }
 
     RUN_UPLOAD_TO_S3 = False
     RUN_CREATE_INFRASTRUCTURE = False
-    RUN_SNOWFLAKE_TEST = False
-    RUN_CREATE_STAGE = False
-    RUN_CREATE_RAW_TABLE = False
-    RUN_COPY_INTO = False 
+    RUN_SNOWFLAKE_TEST = True
+    RUN_CREATE_STAGE = True
+    RUN_CREATE_RAW_TABLE = True
+    RUN_COPY_INTO = True
 
     config = load_config()
     validate_config(config)
 
-    local_file_path = validate_local_file(config["LOCAL_FILE_PATH"])
+    if SELECTED_DATASET not in DATASETS:
+        raise ValueError(f"Invalid dataset selected: {SELECTED_DATASET}")
+
+    selected_dataset = DATASETS[SELECTED_DATASET]
+
+    print(f"Selected dataset: {SELECTED_DATASET}")
+
+    local_file_path = validate_local_file(
+        config["LOCAL_FILE_PATH"],
+        selected_dataset["file_name"]
+    )
 
     if RUN_UPLOAD_TO_S3:
-        s3_key = upload_file_to_s3(local_file_path, config)
+        s3_key = upload_file_to_s3(
+            local_file_path,
+            selected_dataset["s3_folder"],
+            config
+        )
     else:
         file_name = local_file_path.name
-        s3_key = f"{config['S3_FOLDER']}/{file_name}"
+        s3_key = f"{selected_dataset['s3_folder']}/{file_name}"
         print("Skipping S3 upload.")
 
     conn = connect_to_snowflake(config)
@@ -311,24 +426,46 @@ def main():
     set_snowflake_context(conn, config)
 
     if RUN_CREATE_STAGE:
-        create_snowflake_file_format(conn)
-        create_snowflake_stage(conn, config)
+        create_snowflake_file_format(
+            conn,
+            selected_dataset["file_format"]
+        )
+
+        create_snowflake_stage(
+            conn,
+            config,
+            selected_dataset["stage_name"],
+            selected_dataset["s3_folder"],
+            selected_dataset["file_format"]
+        )
     else:
         print("Skipping stage creation.")
 
     if RUN_CREATE_RAW_TABLE:
-        create_raw_partd_table(conn)
+        if SELECTED_DATASET == "partd":
+            create_raw_partd_table(conn)
+        elif SELECTED_DATASET == "hospital":
+            create_raw_hospital_table(conn)
+        else:
+            raise ValueError(f"Raw table creation not implemented for: {SELECTED_DATASET}")
     else:
-        print("Skipping RAW table creation.")
+        print("Skipping RAW table creation.")        
 
     if RUN_COPY_INTO:
-        copy_into_partd_table(conn)
-        validate_partd_row_count(conn)
+        if SELECTED_DATASET == "partd":
+            copy_into_partd_table(conn)
+            validate_partd_row_count(conn)
+        elif SELECTED_DATASET == "hospital":
+            copy_into_hospital_table(conn)
+            validate_hospital_row_count(conn)
+        else:
+            raise ValueError(f"COPY INTO not implemented for: {SELECTED_DATASET}")
     else:
-        print("Skipping COPY INTO.")        
+        print("Skipping COPY INTO.")
 
     conn.close()
 
+    print(f"S3 object key: {s3_key}")
     print("Script executed successfully.")
 
 
