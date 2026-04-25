@@ -46,6 +46,15 @@ Designed to showcase hands-on capability for:
 
 ---
 
+## Current Results
+
+- 26.79M Part D rows loaded successfully
+- 6K+ hospitals loaded successfully
+- Dynamic ingestion pipeline supports multiple datasets
+- Snowflake RAW layer complete
+
+---
+
 ## Business Problem
 
 Healthcare organizations need reliable analytics pipelines to answer questions such as:
@@ -61,8 +70,6 @@ This project simulates a real analytics environment focused on business decision
 ---
 
 ## Architecture
-
-> Add architecture image in `/docs/architecture.png`
 
 ![Architecture](docs/architecture.png)
 
@@ -188,6 +195,8 @@ Edit the dataset selector inside `main()`:
 Then run:
 
     python ingestion/ingest_partd.py
+
+---
 
 ## Ingestion Layer
 
