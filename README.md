@@ -307,8 +307,8 @@ This demonstrates production-style ingestion patterns used in real data engineer
 | Phase | Deliverable | Status |
 |---|---|---|
 | Snowflake Foundation | Badge 1 completed | ✅ |
-| Python + AWS S3 Ingestion | In progress | 🔄 |
-| dbt Modeling Layer | Planned | ⬜ |
+| Python + AWS S3 Ingestion | Completed | ✅ |
+| dbt Modeling Layer | In progress | 🔄 |
 | Tableau Dashboard | Planned | ⬜ |
 | SnowPro Core COF-C03 | Planned | ⬜ |
 
