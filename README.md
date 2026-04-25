@@ -199,6 +199,84 @@ Provider-level prescription activity including:
 
     python ingestion/ingest_partd.py
 
+## Ingestion Layer
+
+The ingestion layer is a reusable Python pipeline designed to onboard multiple CMS healthcare datasets into Snowflake through AWS S3.
+
+Current supported datasets:
+
+| Dataset | Source File | RAW Target Table |
+|---|---|---|
+| Medicare Part D Prescribers | `partd_prescribers_2023.csv` | `RAW.PARTD_PRESCRIBERS` |
+| Hospital General Information | `hospital_general_information.csv` | `RAW.HOSPITAL_GENERAL_INFO` |
+
+### Why This Layer Exists
+
+Healthcare analytics teams often receive large flat files from multiple public or internal sources.
+
+This ingestion layer standardizes how those files are processed by automating:
+
+- Local file validation
+- Dataset selection via configuration
+- Secure upload to AWS S3
+- Snowflake file format creation
+- Snowflake external stage creation
+- RAW table creation
+- COPY INTO bulk loading
+- Row count validation
+
+### Dynamic Dataset Selection
+
+The script uses a dataset selector in `main()`:
+
+    SELECTED_DATASET = "partd"
+
+    # or
+
+    SELECTED_DATASET = "hospital"
+
+This controls:
+
+- Source filename
+- S3 folder destination
+- Snowflake stage
+- Snowflake file format
+- RAW target table
+- COPY INTO logic
+
+### Example Execution Flags
+
+    RUN_UPLOAD_TO_S3 = True
+    RUN_CREATE_STAGE = True
+    RUN_CREATE_RAW_TABLE = True
+    RUN_COPY_INTO = True
+
+These flags allow controlled re-runs without rebuilding every component.
+
+### Example Workflow
+
+    CMS CSV File
+       ↓
+    Python Validation
+       ↓
+    AWS S3 Landing Zone
+       ↓
+    Snowflake External Stage
+       ↓
+    RAW Table Load (COPY INTO)
+       ↓
+    Validation Checks
+
+### Why It Matters
+
+This demonstrates production-style ingestion patterns used in real data engineering environments:
+
+- Modular pipeline design
+- Repeatable dataset onboarding
+- Cloud storage integration
+- Warehouse automation
+- Scalable multi-source architecture    
+
 ---
 
 ## Example Analytics Outputs
