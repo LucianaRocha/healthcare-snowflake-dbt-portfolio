@@ -62,8 +62,6 @@ This project simulates a real analytics environment focused on business decision
 
 ## Architecture
 
-> Add architecture image in `/docs/architecture.png`
-
 ![Architecture](docs/architecture.png)
 
 ---
@@ -188,6 +186,8 @@ Edit the dataset selector inside `main()`:
 Then run:
 
     python ingestion/ingest_partd.py
+
+---
 
 ## Ingestion Layer
 
