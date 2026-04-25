@@ -1,0 +1,50 @@
+<mxfile host="app.diagrams.net">
+<diagram id="healthcare-architecture" name="Page-1">
+<mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1654" pageHeight="1169">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+
+<mxCell id="2" value="Healthcare Analytics Pipeline Architecture" style="text;html=1;strokeColor=none;fillColor=none;fontSize=20;fontStyle=1" vertex="1" parent="1">
+<mxGeometry x="420" y="20" width="450" height="30" as="geometry"/>
+</mxCell>
+
+<mxCell id="3" value="CMS Public Datasets&#xa;• Part D Prescribers CSV&#xa;• Hospital Quality CSV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+<mxGeometry x="60" y="120" width="230" height="100" as="geometry"/>
+</mxCell>
+
+<mxCell id="4" value="Python Ingestion Layer&#xa;• validate files&#xa;• upload to S3&#xa;• create stage/table&#xa;• COPY INTO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+<mxGeometry x="360" y="110" width="260" height="120" as="geometry"/>
+</mxCell>
+
+<mxCell id="5" value="AWS S3 Landing Zone&#xa;• partd-prescribers/&#xa;• hospital-quality/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+<mxGeometry x="710" y="120" width="230" height="100" as="geometry"/>
+</mxCell>
+
+<mxCell id="6" value="Snowflake RAW Schema&#xa;• PARTD_PRESCRIBERS&#xa;• HOSPITAL_GENERAL_INFO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+<mxGeometry x="1030" y="120" width="270" height="100" as="geometry"/>
+</mxCell>
+
+<mxCell id="7" value="Snowflake STAGING Schema&#xa;• cleaned fields&#xa;• standardized models" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+<mxGeometry x="1030" y="300" width="270" height="100" as="geometry"/>
+</mxCell>
+
+<mxCell id="8" value="Snowflake MARTS Schema&#xa;• spend analytics&#xa;• trends&#xa;• quality KPIs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+<mxGeometry x="1030" y="480" width="270" height="100" as="geometry"/>
+</mxCell>
+
+<mxCell id="9" value="Tableau Dashboard&#xa;Executive Reporting / Insights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+<mxGeometry x="1030" y="660" width="270" height="80" as="geometry"/>
+</mxCell>
+
+<mxCell id="10" edge="1" parent="1" source="3" target="4" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+<mxCell id="11" edge="1" parent="1" source="4" target="5" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+<mxCell id="12" edge="1" parent="1" source="5" target="6" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+<mxCell id="13" edge="1" parent="1" source="6" target="7" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+<mxCell id="14" edge="1" parent="1" source="7" target="8" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+<mxCell id="15" edge="1" parent="1" source="8" target="9" style="endArrow=block;"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>
