@@ -36,11 +36,13 @@ Designed to showcase hands-on capability for:
 ## Project Metrics
 
 - **3.61 GB** CMS Medicare Part D source file
-- **Multi-million row** public healthcare dataset
+- **26.79 million rows** loaded into `RAW.PARTD_PRESCRIBERS`
+- **6,000+ US hospitals** loaded into `RAW.HOSPITAL_GENERAL_INFO`
 - **3-layer Snowflake architecture** (`RAW`, `STAGING`, `MARTS`)
-- **5+ integrated technologies** across the pipeline
+- **2 production-style ingestion pipelines** (Part D + Hospital datasets)
+- **5+ integrated technologies** across the platform
 - **End-to-end ELT workflow** from ingestion to dashboarding
-- **Real business use case** in healthcare analytics
+- **Real healthcare business use case** using CMS public data
 
 ---
 
@@ -62,29 +64,7 @@ This project simulates a real analytics environment focused on business decision
 
 > Add architecture image in `/docs/architecture.png`
 
-    CMS Medicare CSV Files
-            │
-            ▼
-    Python Ingestion Layer
-    (pandas + boto3)
-            │
-            ▼
-    AWS S3 Landing Zone
-            │
-            ▼
-    Snowflake RAW Schema
-    (COPY INTO)
-            │
-            ▼
-    dbt Staging Models
-    (cleaning / standardization)
-            │
-            ▼
-    dbt Mart Models
-    (analytics-ready outputs)
-            │
-            ▼
-    Tableau Public Dashboard
+![Architecture](docs/architecture.png)
 
 ---
 
@@ -135,11 +115,11 @@ Provider-level prescription activity including:
 
     ├── RAW
     │   ├── PARTD_PRESCRIBERS
-    │   └── HOSPITALS
+    │   └── HOSPITAL_GENERAL_INFO
 
     ├── STAGING
     │   ├── STG_PARTD_PRESCRIBERS
-    │   └── STG_HOSPITALS
+    │   └── STG_HOSPITAL_GENERAL_INFO
 
     └── MARTS
         ├── MART_DRUG_SPEND_BY_SPECIALTY
@@ -197,7 +177,95 @@ Provider-level prescription activity including:
 
 ### Run Pipeline
 
+Edit the dataset selector inside `main()`:
+
+    SELECTED_DATASET = "partd"
+
+    # or
+
+    SELECTED_DATASET = "hospital"
+
+Then run:
+
     python ingestion/ingest_partd.py
+
+## Ingestion Layer
+
+The ingestion layer is a reusable Python pipeline designed to onboard multiple CMS healthcare datasets into Snowflake through AWS S3.
+
+Current supported datasets:
+
+| Dataset | Source File | RAW Target Table |
+|---|---|---|
+| Medicare Part D Prescribers | `partd_prescribers_2023.csv` | `RAW.PARTD_PRESCRIBERS` |
+| Hospital General Information | `hospital_general_information.csv` | `RAW.HOSPITAL_GENERAL_INFO` |
+
+### Why This Layer Exists
+
+Healthcare analytics teams often receive large flat files from multiple public or internal sources.
+
+This ingestion layer standardizes how those files are processed by automating:
+
+- Local file validation
+- Dataset selection via configuration
+- Secure upload to AWS S3
+- Snowflake file format creation
+- Snowflake external stage creation
+- RAW table creation
+- COPY INTO bulk loading
+- Row count validation
+
+### Dynamic Dataset Selection
+
+The script uses a dataset selector in `main()`:
+
+    SELECTED_DATASET = "partd"
+
+    # or
+
+    SELECTED_DATASET = "hospital"
+
+This controls:
+
+- Source filename
+- S3 folder destination
+- Snowflake stage
+- Snowflake file format
+- RAW target table
+- COPY INTO logic
+
+### Example Execution Flags
+
+    RUN_UPLOAD_TO_S3 = True
+    RUN_CREATE_STAGE = True
+    RUN_CREATE_RAW_TABLE = True
+    RUN_COPY_INTO = True
+
+These flags allow controlled re-runs without rebuilding every component.
+
+### Example Workflow
+
+    CMS CSV File
+       ↓
+    Python Validation
+       ↓
+    AWS S3 Landing Zone
+       ↓
+    Snowflake External Stage
+       ↓
+    RAW Table Load (COPY INTO)
+       ↓
+    Validation Checks
+
+### Why It Matters
+
+This demonstrates production-style ingestion patterns used in real data engineering environments:
+
+- Modular pipeline design
+- Repeatable dataset onboarding
+- Cloud storage integration
+- Warehouse automation
+- Scalable multi-source architecture    
 
 ---
 
@@ -229,8 +297,8 @@ Provider-level prescription activity including:
 | Phase | Deliverable | Status |
 |---|---|---|
 | Snowflake Foundation | Badge 1 completed | ✅ |
-| Python + AWS S3 Ingestion | In progress | 🔄 |
-| dbt Modeling Layer | Planned | ⬜ |
+| Python + AWS S3 Ingestion | Completed | ✅ |
+| dbt Modeling Layer | In progress | 🔄 |
 | Tableau Dashboard | Planned | ⬜ |
 | SnowPro Core COF-C03 | Planned | ⬜ |
 
@@ -272,4 +340,4 @@ This project uses **real healthcare data**, enterprise cloud tools, modern wareh
 
 ---
 
-*Repository under active development. Last updated: April 2026.*
+*Repository under active development. Last updated: April 25, 2026.*
