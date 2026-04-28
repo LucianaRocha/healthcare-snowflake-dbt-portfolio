@@ -12,7 +12,7 @@ PARTD_FILE_FORMAT = "PARTD_CSV_FORMAT"
 PARTD_STAGE = "PARTD_S3_STAGE"
 PARTD_TABLE = "PARTD_PRESCRIBERS"
 
-
+# step 1: organize config
 def get_args():
     parser = argparse.ArgumentParser()
 
@@ -62,7 +62,7 @@ def validate_config(config):
             f"Missing required environment variables: {', '.join(missing_vars)}"
         )
 
-
+# step 2: Treat csv file
 def validate_local_file(base_folder, file_name):
     path = Path(base_folder) / file_name
 
@@ -110,7 +110,7 @@ def add_report_year_to_csv(local_file_path, runtime):
 
     return output_path
 
-
+# step 3: Updload zip file to S3
 def upload_file_to_s3(local_file_path, config, runtime):
     file_name = runtime["compressed_file_name"]
     s3_key = f"{runtime['s3_folder']}/{file_name}"
@@ -156,7 +156,7 @@ def repair_athena_table(config):
     print("Athena repair started.")
     return response["QueryExecutionId"]
 
-
+# step 4: Connect to Snowflake
 def connect_to_snowflake(config):
     print("Connecting to Snowflake...")
 
@@ -185,7 +185,7 @@ def test_snowflake_connection(conn):
     finally:
         cursor.close()
 
-
+# step 5: Create Snowflake objects
 def create_snowflake_database_and_schema(conn, config):
     cursor = conn.cursor()
 
@@ -212,18 +212,27 @@ def set_snowflake_context(conn, config):
         cursor.execute(f"USE DATABASE {config['SNOWFLAKE_DATABASE']}")
         cursor.execute(f"USE SCHEMA {config['SNOWFLAKE_SCHEMA']}")
 
-        print("Snowflake context set successfully.")
+        print(
+            f"Snowflake context set: "
+            f"{config['SNOWFLAKE_DATABASE']}.{config['SNOWFLAKE_SCHEMA']}"
+        )
 
     finally:
         cursor.close()
 
 
-def create_snowflake_file_format(conn):
+def create_snowflake_file_format(conn, config):
     cursor = conn.cursor()
+
+    file_format_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_FILE_FORMAT}"
+    )
 
     try:
         cursor.execute(f"""
-            CREATE OR REPLACE FILE FORMAT {PARTD_FILE_FORMAT}
+            CREATE OR REPLACE FILE FORMAT {file_format_name}
             TYPE = CSV
             COMPRESSION = GZIP
             FIELD_DELIMITER = ','
@@ -234,7 +243,7 @@ def create_snowflake_file_format(conn):
             ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE
         """)
 
-        print(f"Snowflake file format {PARTD_FILE_FORMAT} created successfully.")
+        print(f"Snowflake file format created: {file_format_name}")
 
     finally:
         cursor.close()
@@ -243,29 +252,53 @@ def create_snowflake_file_format(conn):
 def create_snowflake_stage(conn, config, runtime):
     cursor = conn.cursor()
 
+    stage_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_STAGE}"
+    )
+
+    file_format_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_FILE_FORMAT}"
+    )
+
+    stage_url = (
+        f"s3://{config['S3_BUCKET_NAME']}/"
+        f"{runtime['s3_folder']}/"
+    )
+
     try:
         cursor.execute(f"""
-            CREATE OR REPLACE STAGE {PARTD_STAGE}
-            URL = 's3://{config["S3_BUCKET_NAME"]}/{runtime["s3_folder"]}/'
+            CREATE OR REPLACE STAGE {stage_name}
+            URL = '{stage_url}'
             CREDENTIALS = (
                 AWS_KEY_ID = '{config["AWS_ACCESS_KEY_ID"]}'
                 AWS_SECRET_KEY = '{config["AWS_SECRET_ACCESS_KEY"]}'
             )
-            FILE_FORMAT = {PARTD_FILE_FORMAT}
+            FILE_FORMAT = {file_format_name}
         """)
 
-        print(f"Snowflake external stage {PARTD_STAGE} created successfully.")
+        print(f"Snowflake stage created: {stage_name}")
+        print(f"Stage URL: {stage_url}")
 
     finally:
         cursor.close()
 
 
-def create_raw_partd_table(conn):
+def create_raw_partd_table(conn, config):
     cursor = conn.cursor()
+
+    table_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_TABLE}"
+    )
 
     try:
         cursor.execute(f"""
-            CREATE TABLE IF NOT EXISTS {PARTD_TABLE} (
+            CREATE TABLE IF NOT EXISTS {table_name} (
                 REPORT_YEAR NUMBER,
                 PRSCRBR_NPI STRING,
                 PRSCRBR_LAST_ORG_NAME STRING,
@@ -292,34 +325,62 @@ def create_raw_partd_table(conn):
             )
         """)
 
-        print(f"RAW table {PARTD_TABLE} verified successfully.")
+        print(f"RAW table verified successfully: {table_name}")
 
     finally:
         cursor.close()
 
-
-def delete_existing_year(conn, runtime):
+# step 6: Delete and Copy into Snowflake
+def delete_existing_year(conn, config, runtime):
     cursor = conn.cursor()
+
     report_year = runtime["report_year"]
+
+    table_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_TABLE}"
+    )
 
     try:
         cursor.execute(f"""
-            DELETE FROM {PARTD_TABLE}
+            DELETE FROM {table_name}
             WHERE REPORT_YEAR = {report_year}
         """)
 
-        print(f"Deleted existing rows for report year {report_year}: {cursor.rowcount:,}")
+        print(
+            f"Deleted existing rows for report year "
+            f"{report_year}: {cursor.rowcount:,}"
+        )
 
     finally:
         cursor.close()
 
 
-def copy_into_partd_table(conn):
+def copy_into_partd_table(conn, config):
     cursor = conn.cursor()
+
+    table_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_TABLE}"
+    )
+
+    stage_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_STAGE}"
+    )
+
+    file_format_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_FILE_FORMAT}"
+    )
 
     try:
         cursor.execute(f"""
-            COPY INTO {PARTD_TABLE}
+            COPY INTO {table_name}
             FROM (
                 SELECT
                     $1::NUMBER,
@@ -345,42 +406,61 @@ def copy_into_partd_table(conn):
                     $21::NUMBER,
                     $22::STRING,
                     $23::NUMBER
-                FROM @{PARTD_STAGE}
+                FROM @{stage_name}
             )
-            FILE_FORMAT = (FORMAT_NAME = {PARTD_FILE_FORMAT})
+            FILE_FORMAT = (FORMAT_NAME = {file_format_name})
             ON_ERROR = CONTINUE
         """)
 
-        print(f"COPY INTO {PARTD_TABLE} completed successfully.")
+        print(f"COPY INTO completed successfully: {table_name}")
 
     finally:
         cursor.close()
 
-
-def validate_partd_row_count(conn):
+# step 7: Validate values
+def validate_partd_row_count(conn, config):
     cursor = conn.cursor()
+
+    table_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_TABLE}"
+    )
 
     try:
-        cursor.execute(f"SELECT COUNT(*) FROM {PARTD_TABLE}")
+        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
         row_count = cursor.fetchone()[0]
-        print(f"{PARTD_TABLE} total row count: {row_count:,}")
+
+        print(f"Total row count in {table_name}: {row_count:,}")
 
     finally:
         cursor.close()
 
 
-def validate_partd_year_count(conn, runtime):
+def validate_partd_year_count(conn, config, runtime):
     cursor = conn.cursor()
+
     report_year = runtime["report_year"]
+
+    table_name = (
+        f"{config['SNOWFLAKE_DATABASE']}."
+        f"{config['SNOWFLAKE_SCHEMA']}."
+        f"{PARTD_TABLE}"
+    )
 
     try:
         cursor.execute(f"""
             SELECT COUNT(*)
-            FROM {PARTD_TABLE}
+            FROM {table_name}
             WHERE REPORT_YEAR = {report_year}
         """)
+
         row_count = cursor.fetchone()[0]
-        print(f"{PARTD_TABLE} row count for {report_year}: {row_count:,}")
+
+        print(
+            f"Row count for {report_year} in "
+            f"{table_name}: {row_count:,}"
+        )
 
     finally:
         cursor.close()
@@ -389,15 +469,15 @@ def validate_partd_year_count(conn, runtime):
 def main():
     print("Starting Medicare Part D ingestion script...")
 
-    RUN_ADD_REPORT_YEAR_AND_COMPRESS = True
-    RUN_UPLOAD_TO_S3 = True
-    RUN_REPAIR_ATHENA = True
+    RUN_ADD_REPORT_YEAR_AND_COMPRESS = False
+    RUN_UPLOAD_TO_S3 = False
+    RUN_REPAIR_ATHENA = False
 
     RUN_CREATE_INFRASTRUCTURE = False
-    RUN_SNOWFLAKE_TEST = False
-    RUN_CREATE_STAGE = False
-    RUN_CREATE_RAW_TABLE = False
-    RUN_COPY_INTO = False
+    RUN_SNOWFLAKE_TEST = True
+    RUN_CREATE_STAGE = True
+    RUN_CREATE_RAW_TABLE = True
+    RUN_COPY_INTO = True
 
     args = get_args()
     runtime = build_runtime_config(args.year)
@@ -414,8 +494,10 @@ def main():
 
     if RUN_ADD_REPORT_YEAR_AND_COMPRESS:
         prepared_file_path = add_report_year_to_csv(local_file_path, runtime)
+        expected_s3_file_name = runtime["compressed_file_name"]
     else:
         prepared_file_path = local_file_path
+        expected_s3_file_name = local_file_path.name
 
     if RUN_UPLOAD_TO_S3:
         s3_key = upload_file_to_s3(prepared_file_path, config, runtime)
@@ -423,7 +505,7 @@ def main():
         if RUN_REPAIR_ATHENA:
             repair_athena_table(config)
     else:
-        s3_key = f"{runtime['s3_folder']}/{runtime['compressed_file_name']}"
+        s3_key = f"{runtime['s3_folder']}/{expected_s3_file_name}"
         print("Skipping S3 upload.")
 
     conn = connect_to_snowflake(config)
@@ -440,21 +522,21 @@ def main():
         set_snowflake_context(conn, config)
 
         if RUN_CREATE_STAGE:
-            create_snowflake_file_format(conn)
+            create_snowflake_file_format(conn, config)
             create_snowflake_stage(conn, config, runtime)
         else:
             print("Skipping stage creation.")
 
         if RUN_CREATE_RAW_TABLE:
-            create_raw_partd_table(conn)
+            create_raw_partd_table(conn, config)
         else:
             print("Skipping RAW table creation.")
 
         if RUN_COPY_INTO:
-            delete_existing_year(conn, runtime)
-            copy_into_partd_table(conn)
-            validate_partd_year_count(conn, runtime)
-            validate_partd_row_count(conn)
+            delete_existing_year(conn, config, runtime)
+            copy_into_partd_table(conn, config)
+            validate_partd_year_count(conn, config, runtime)
+            validate_partd_row_count(conn, config)
         else:
             print("Skipping COPY INTO.")
 
