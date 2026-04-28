@@ -1,4 +1,4 @@
-# Healthcare Analytics Pipeline
+# Medicare Part D Analytics Platform  
 ### CMS Medicare Data → Python → AWS S3 → Snowflake → dbt → Tableau
 
 ![Status](https://img.shields.io/badge/status-active%20development-success)
@@ -10,62 +10,67 @@
 
 ---
 
-## Executive Summary
+# Executive Summary
 
-Production-style healthcare analytics pipeline built with **real CMS Medicare datasets** and a modern cloud data stack.
+Production-style healthcare analytics platform built using **real CMS Medicare Part D public data** and a modern cloud data stack.
 
-This portfolio project demonstrates how enterprise healthcare data can be ingested, stored, transformed, tested, modeled, and visualized using tools widely requested in today’s market:
+This project demonstrates how enterprise-scale healthcare data can be:
 
-- Snowflake
-- Python
-- AWS S3
-- dbt
-- SQL
-- Tableau
-- GitHub
+- Ingested with Python
+- Optimized and stored in AWS S3
+- Loaded into Snowflake
+- Modeled using dbt
+- Tested and documented
+- Visualized in Tableau
 
-Designed to showcase hands-on capability for:
+Designed to showcase practical capabilities for:
 
-- Senior BI Developer roles
-- Analytics Engineer roles
-- Data Engineer roles
-- Healthcare / Pharma Data roles
-
----
-
-## Project Metrics
-
-- **3.61 GB** CMS Medicare Part D source file
-- **26.79 million rows** loaded into `RAW.PARTD_PRESCRIBERS`
-- **6,000+ US hospitals** loaded into `RAW.HOSPITAL_GENERAL_INFO`
-- **3-layer Snowflake architecture** (`RAW`, `STAGING`, `MARTS`)
-- **2 production-style ingestion pipelines** (Part D + Hospital datasets)
-- **5+ integrated technologies** across the platform
-- **End-to-end ELT workflow** from ingestion to dashboarding
-- **Real healthcare business use case** using CMS public data
+- Analytics Engineer
+- Data Engineer
+- Senior BI Developer
+- Healthcare / Pharma Analytics
+- Snowflake Developer
 
 ---
 
-## Current Results
+# Project Highlights
 
-- 26.79M Part D rows loaded successfully
-- 6K+ hospitals loaded successfully
-- Dynamic ingestion pipeline supports multiple datasets
-- Snowflake RAW layer complete
+- **3.61 GB** raw CMS source file
+- **691 MB compressed** GZIP cloud landing file
+- **26.79+ million rows** loaded to Snowflake
+- **Multi-year ingestion architecture**
+- **Dynamic parameterized pipeline**
+- **Partitioned S3 data lake structure**
+- **dbt dimensional modeling layer**
+- **Interactive Tableau dashboards**
+- **Real healthcare business use case**
 
 ---
 
-## Business Problem
+# Current Status
 
-Healthcare organizations need reliable analytics pipelines to answer questions such as:
+| Layer | Status |
+|---|---|
+| Python Ingestion Pipeline | ✅ Complete |
+| AWS S3 Landing Zone | ✅ Complete |
+| Snowflake RAW Layer | ✅ Complete |
+| Multi-Year Architecture | ✅ Complete |
+| dbt Modeling Layer | 🔄 In Progress |
+| Tableau Dashboards | ⬜ Planned |
 
-- Which drug categories drive the highest Medicare spend?
-- Which provider specialties generate the most claims?
-- How is cost-per-claim trending over time?
-- Which states have the highest prescriber concentration?
-- How do hospital quality metrics compare geographically?
+---
 
-This project simulates a real analytics environment focused on business decision-making.
+# Business Problem
+
+Healthcare organizations need reliable analytics platforms to answer questions such as:
+
+- Which states drive the highest Medicare drug spend?
+- Which specialties generate the most prescription volume?
+- Which providers prescribe the highest-cost drugs?
+- How is generic adoption changing over time?
+- Where are provider concentrations highest?
+
+This project simulates a real production analytics environment focused on business decision-making.
 
 ---
 
@@ -80,25 +85,22 @@ This project simulates a real analytics environment focused on business decision
 | Dataset | Source | Format | Description |
 |---|---|---|---|
 | Medicare Part D Prescribers | [CMS data.gov](https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/medicare-part-d-prescribers-by-provider-and-drug) | CSV | Prescription drugs prescribed by providers, paid under Medicare Part D. Organized by NPI, drug name, total fills, and total cost. |
-| Hospital General Information | [CMS Provider Data](https://data.cms.gov/provider-data/dataset/ynj2-r877) | CSV | ~6,000 US hospitals with star ratings, ownership type, readmission rates, and patient experience scores. |
 
 ### 1. Medicare Part D Prescribers
 
-Provider-level prescription activity including:
+Dataset contains:
 
 - Drug name
+- Prescriber NPI
+- Provider specialty
+- Brand drug name
+- Generic drug name
+- State
 - Total claims
 - Total fills
+- Total beneficiaries
 - Total drug cost
-- Prescriber identifiers
 
-### 2. Hospital General Information
-
-- Star ratings
-- Ownership type
-- Readmission metrics
-- Patient experience indicators
-- Geographic data
 
 ---
 
@@ -106,54 +108,85 @@ Provider-level prescription activity including:
 
 | Layer | Tool | Purpose |
 |---|---|---|
-| Data Source | CMS Medicare Data | Real healthcare source data |
-| Ingestion | Python, pandas, boto3 | Read, clean, upload files |
-| Cloud Storage | AWS S3 | Raw landing zone |
-| Data Warehouse | Snowflake | Storage, compute, analytics serving |
-| Transformation | dbt | Models, tests, documentation |
-| Visualization | Tableau Public | Dashboard publishing |
-| Version Control | GitHub | Code and documentation |
+| Data Source | CMS Medicare Part D Prescribers | Real public healthcare dataset for prescription drug spend analytics |
+| Ingestion | Python, pandas, boto3 | Validate source files, add metadata, compress CSV files, and upload to S3 |
+| Cloud Storage | AWS S3 | Partitioned raw data lake organized by report year |
+| Query Layer | Amazon Athena | Optional validation and raw data exploration over S3 partitions |
+| Data Warehouse | Snowflake | RAW storage, scalable compute, and analytics serving layer |
+| Transformation | dbt | Staging models, dimensions, facts, marts, tests, and documentation |
+| Visualization | Tableau Public | Executive dashboards and public portfolio reporting |
+| Version Control | GitHub | Code, documentation, and project history |
 
 ---
 
 ## Snowflake Schema Design
 
-    HEALTHCARE_DB
+```text
+HEALTHCARE_DB
 
-    ├── RAW
-    │   ├── PARTD_PRESCRIBERS
-    │   └── HOSPITAL_GENERAL_INFO
+├── RAW
+│   └── PARTD_PRESCRIBERS
+│       • Multi-year Medicare Part D source data
+│       • Loaded from AWS S3 compressed CSV files
+│       • Includes REPORT_YEAR metadata column
 
-    ├── STAGING
-    │   ├── STG_PARTD_PRESCRIBERS
-    │   └── STG_HOSPITAL_GENERAL_INFO
+├── STAGING
+│   └── STG_PARTD_PRESCRIBERS
+│       • Cleaned and standardized source model
+│       • Renamed columns
+│       • Data quality preparation layer
 
-    └── MARTS
-        ├── MART_DRUG_SPEND_BY_SPECIALTY
-        ├── MART_HOSPITAL_QUALITY
-        └── MART_TOP_PRESCRIBERS
+├── ANALYTICS
+│   ├── DIM_PRESCRIBER
+│   ├── DIM_DRUG
+│   ├── DIM_GEOGRAPHY
+│   ├── DIM_SPECIALTY
+│   └── FCT_PARTD_PRESCRIPTIONS
+
+└── MARTS
+    ├── MART_DRUG_SPEND_BY_STATE
+    ├── MART_SPECIALTY_SUMMARY
+    ├── MART_TOP_PRESCRIBERS
+    └── MART_BRAND_GENERIC_SUMMARY
+```
 
 ---
 
 ## Repository Structure
 
-    healthcare-snowflake-dbt-portfolio/
+```text
+healthcare-snowflake-dbt-portfolio/
 
-    ├── ingestion/
-    │   ├── ingest_partd.py
-    │   └── requirements.txt
+├── ingestion/
+│   ├── ingest_partd.py
+│   └── requirements.txt
 
-    ├── dbt/
-    │   ├── models/
-    │   │   ├── staging/
-    │   │   └── marts/
-    │   └── dbt_project.yml
+├── dbt/
+│   ├── models/
+│   │   ├── staging/
+│   │   ├── analytics/
+│   │   └── marts/
+│   ├── tests/
+│   ├── macros/
+│   ├── seeds/
+│   └── dbt_project.yml
 
-    ├── docs/
-    │   ├── architecture.png
-    │   └── schema.sql
+├── docs/
+│   ├── architecture.png
+│   ├── schema.sql
+│   ├── dashboard_mockups/
+│   └── screenshots/
 
-    └── README.md
+├── sql/
+│   ├── snowflake_setup.sql
+│   └── validation_queries.sql
+
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+
 
 ---
 
@@ -162,95 +195,156 @@ Provider-level prescription activity including:
 ### Prerequisites
 
 - Python 3.9+
-- AWS account
-- S3 bucket in `us-west-2`
+- AWS account with S3 access
+- S3 bucket created in `us-west-2`
 - Snowflake account
-- Access credentials configured as environment variables
+- Local CMS Part D source files downloaded
+- Credentials configured in `.env`
+
+---
 
 ### Environment Variables
 
-    export AWS_ACCESS_KEY_ID=your_key
-    export AWS_SECRET_ACCESS_KEY=your_secret
-    export SNOWFLAKE_ACCOUNT=your_account
-    export SNOWFLAKE_USER=your_user
-    export SNOWFLAKE_PASSWORD=your_password
-    export SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-    export SNOWFLAKE_DATABASE=HEALTHCARE_DB
-    export SNOWFLAKE_SCHEMA=RAW
+```env
+AWS_ACCESS_KEY_ID=your_key
+AWS_SECRET_ACCESS_KEY=your_secret
+AWS_REGION=us-west-2
+S3_BUCKET_NAME=medicare-partd-analytics
+
+SNOWFLAKE_ACCOUNT=your_account
+SNOWFLAKE_USER=your_user
+SNOWFLAKE_PASSWORD=your_password
+SNOWFLAKE_WAREHOUSE=COMPUTE_WH
+SNOWFLAKE_DATABASE=HEALTHCARE_DB
+SNOWFLAKE_SCHEMA=RAW
+SNOWFLAKE_ROLE=SYSADMIN
+
+LOCAL_FILE_PATH=data
+```
 
 ### Install Dependencies
 
-    pip install -r ingestion/requirements.txt
+```bash
+pip install -r ingestion/requirements.txt
+```
 
 ### Run Pipeline
 
-Edit the dataset selector inside `main()`:
+Load a specific Medicare Part D report year using the `--year` parameter:
 
-    SELECTED_DATASET = "partd"
+```bash
+python ingestion/ingest_partd.py --year 2023
+python ingestion/ingest_partd.py --year 2022
+python ingestion/ingest_partd.py --year 2021
+```
 
-    # or
+### What Happens Automatically
+For the selected year, the pipeline will:
 
-    SELECTED_DATASET = "hospital"
-
-Then run:
-
-    python ingestion/ingest_partd.py
+- Validate the local source file
+- Add REPORT_YEAR metadata column
+- Compress the file to .csv.gz
+- Upload to partitioned AWS S3 path
+- Repair Athena partitions
+- Load Snowflake RAW table
+- Replace existing rows for that year
+- Validate row counts
 
 ---
 
 ## Ingestion Layer
 
-The ingestion layer is a reusable Python pipeline designed to onboard multiple CMS healthcare datasets into Snowflake through AWS S3.
+The ingestion layer is a production-style Python pipeline designed to onboard **multi-year CMS Medicare Part D datasets** into Snowflake through AWS S3.
 
-Current supported datasets:
+The pipeline supports parameterized yearly loads, metadata enrichment, compression, and cloud partitioning.
 
-| Dataset | Source File | RAW Target Table |
+### Current Supported Dataset
+
+| Dataset | Source File Pattern | RAW Target Table |
 |---|---|---|
-| Medicare Part D Prescribers | `partd_prescribers_2023.csv` | `RAW.PARTD_PRESCRIBERS` |
-| Hospital General Information | `hospital_general_information.csv` | `RAW.HOSPITAL_GENERAL_INFO` |
+| Medicare Part D Prescribers | `partd_prescribers_<year>.csv` | `RAW.PARTD_PRESCRIBERS` |
+
+### Example Source Files
+
+```text
+data/partd_prescribers_2021.csv
+data/partd_prescribers_2022.csv
+data/partd_prescribers_2023.csv
+```
+
+### Final S3 Cloud Objects
+- raw/year=2021/partd_prescribers_2021.csv.gz
+- raw/year=2022/partd_prescribers_2022.csv.gz
+- raw/year=2023/partd_prescribers_2023.csv.gz
+
 
 ### Why This Layer Exists
 
-Healthcare analytics teams often receive large flat files from multiple public or internal sources.
+Healthcare analytics teams often receive large yearly flat files.
 
-This ingestion layer standardizes how those files are processed by automating:
+This ingestion layer standardizes onboarding by automating:
 
 - Local file validation
-- Dataset selection via configuration
+- Year-based file selection
+- Metadata enrichment with REPORT_YEAR
+- Compression to .csv.gz
 - Secure upload to AWS S3
-- Snowflake file format creation
-- Snowflake external stage creation
-- RAW table creation
-- COPY INTO bulk loading
+- Athena partition refresh
+- Snowflake RAW loading
+- Safe yearly reload logic
 - Row count validation
 
-### Dynamic Dataset Selection
+### Dynamic Year Selection
 
-The script uses a dataset selector in `main()`:
+The script uses a command-line parameter to select which Medicare Part D report year to process.
 
-    SELECTED_DATASET = "partd"
+### Example
 
-    # or
-
-    SELECTED_DATASET = "hospital"
-
-This controls:
-
+```bash
+python ingestion/ingest_partd.py --year 2023
+python ingestion/ingest_partd.py --year 2022
+python ingestion/ingest_partd.py --year 2021
+```
+### This Automatically Controls
 - Source filename
-- S3 folder destination
-- Snowflake stage
-- Snowflake file format
-- RAW target table
-- COPY INTO logic
+- Local file lookup
+- REPORT_YEAR metadata column
+- Temporary compressed file name
+- S3 partition destination
+- Snowflake stage source path
+- Year-specific delete/reload logic
+- Validation row counts
+
+### This Automatically Controls
+For:
+
+```bash
+python ingestion/ingest_partd.py --year 2023
+```
+The pipeline resolves to:
+
+```bash
+Source File: partd_prescribers_2023.csv
+S3 Folder: raw/year=2023/
+Cloud File: partd_prescribers_2023.csv.gz
+Target Rows: REPORT_YEAR = 2023
+```
 
 ### Example Execution Flags
 
-    RUN_UPLOAD_TO_S3 = True
-    RUN_CREATE_STAGE = True
-    RUN_CREATE_RAW_TABLE = True
-    RUN_COPY_INTO = True
+The pipeline uses runtime flags inside `main()` to control which steps execute.
 
-These flags allow controlled re-runs without rebuilding every component.
+```python
+RUN_ADD_REPORT_YEAR_AND_COMPRESS = True
+RUN_UPLOAD_TO_S3 = True
+RUN_REPAIR_ATHENA = True
+
+RUN_CREATE_INFRASTRUCTURE = False
+RUN_SNOWFLAKE_TEST = False
+RUN_CREATE_STAGE = False
+RUN_CREATE_RAW_TABLE = False
+RUN_COPY_INTO = False
+```
 
 ### Example Workflow
 
@@ -268,13 +362,18 @@ These flags allow controlled re-runs without rebuilding every component.
 
 ### Why It Matters
 
-This demonstrates production-style ingestion patterns used in real data engineering environments:
+This project demonstrates production-style ingestion patterns used in modern data engineering environments:
 
-- Modular pipeline design
-- Repeatable dataset onboarding
-- Cloud storage integration
-- Warehouse automation
-- Scalable multi-source architecture    
+- Parameterized multi-year pipeline design
+- Repeatable yearly data onboarding
+- Large-file processing with chunked pandas workflows
+- Automated metadata enrichment (`REPORT_YEAR`)
+- Compressed cloud storage optimization (`.csv.gz`)
+- Partitioned AWS S3 data lake architecture
+- Athena integration for raw data validation
+- Snowflake warehouse automation
+- Safe delete-and-reload year processing
+- Scalable foundation for future annual CMS data loads
 
 ---
 
@@ -282,22 +381,27 @@ This demonstrates production-style ingestion patterns used in real data engineer
 
 ### Financial Analytics
 
-- Total Medicare spend by drug class
-- Cost-per-claim trends
-- High-cost provider segments
+- Total Medicare drug spend by state
+- Year-over-year spend trends
+- Brand vs Generic cost comparison
+- Average cost per claim by specialty
+- Highest-cost provider segments
 
 ### Operational Analytics
 
-- Top prescribers by specialty
-- State-level provider density
-- Hospital benchmarking
+- Top prescribers by total claims
+- Top prescribers by total drug spend
+- State-level provider concentration
+- Specialty prescription volume rankings
+- Beneficiary coverage by provider type
 
 ### Executive Reporting
 
 - KPI scorecards
-- Geographic dashboards
-- Trend analysis
-- Ranking views
+- Geographic spend dashboards
+- Multi-year trend analysis
+- Top 10 ranking views
+- Interactive filters by year, state, specialty, and drug type
 
 ---
 
@@ -349,4 +453,4 @@ This project uses **real healthcare data**, enterprise cloud tools, modern wareh
 
 ---
 
-*Repository under active development. Last updated: April 25, 2026.*
+*Repository under active development. Last updated: April 28, 2026.*
