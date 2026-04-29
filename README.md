@@ -31,6 +31,17 @@ Designed to showcase practical capabilities for:
 - Healthcare / Pharma Analytics
 - Snowflake Developer
 
+## Production Design Patterns
+
+This project applies real-world data engineering patterns:
+
+- Incremental multi-year ingestion
+- Partitioned data lake design (S3)
+- Idempotent pipeline execution (safe re-runs)
+- Separation of storage and compute (Snowflake)
+- Modular transformations (dbt)
+- Data validation and testing
+
 ---
 
 # Project Highlights
@@ -122,7 +133,7 @@ Dataset contains:
 ## Snowflake Schema Design
 
 ```text
-HEALTHCARE_DB
+MEDICARE_ANALYTICS_DB
 
 ├── RAW
 │   └── PARTD_PRESCRIBERS
@@ -375,6 +386,65 @@ This project demonstrates production-style ingestion patterns used in modern dat
 - Safe delete-and-reload year processing
 - Scalable foundation for future annual CMS data loads
 
+---
+
+## dbt Transformation Layer (In Progress)
+
+The dbt layer transforms raw Medicare data into analytics-ready models following a layered architecture:
+
+- **STAGING**
+  - Column standardization
+  - Data type casting
+  - Null handling
+  - Metadata enrichment
+
+- **ANALYTICS**
+  - Dimensional modeling (star schema)
+  - Fact table for prescriptions
+  - Reusable dimension tables
+
+- **MARTS**
+  - Business-focused aggregations
+  - Optimized for Tableau dashboards
+
+### Example dbt Model
+
+```sql
+SELECT
+    prscrbr_npi        AS prescriber_npi,
+    tot_clms::NUMBER   AS total_claims,
+    tot_benes::NUMBER  AS total_beneficiaries,
+    tot_drug_cst::FLOAT AS total_drug_cost,
+    report_year
+FROM {{ source('raw', 'partd_prescribers') }}
+```
+
+---
+
+## Data Modeling Strategy
+
+The project follows a dimensional modeling approach:
+
+- **Fact Table**
+  - `fct_partd_prescriptions`
+  - Grain: Prescriber + Drug + Year
+
+- **Dimensions**
+  - `dim_prescriber`
+  - `dim_drug`
+  - `dim_geography`
+  - `dim_specialty`
+
+This structure enables:
+
+- Efficient aggregation queries
+- Flexible business analysis
+- Scalable analytics modeling
+
+Key Metrics:
+
+- Total beneficiaries → SUM(tot_benes)
+- Total providers → COUNT(DISTINCT prscrbr_npi)
 ---
 
 ## Example Analytics Outputs
