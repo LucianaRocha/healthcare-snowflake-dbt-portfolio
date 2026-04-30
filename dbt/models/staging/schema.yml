@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_partd_prescribers
+    columns:
+      - name: prscrbr_npi
+        tests:
+          - not_null
+
+      - name: report_year
+        tests:
+          - not_null
+
+      - name: total_drug_cost
+        tests:
+          - not_null

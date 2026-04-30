@@ -1,0 +1,18 @@
+user:
+  outputs:
+    default:
+      account: ROB12689
+      auth_type: keypair
+      client_session_keep_alive: false
+      connect_retries: 3
+      connect_timeout: 30
+      database: MEDICARE_ANALYTICS_DB
+      private_key_path: /tmp/.dbt/keyfile.pem
+      retry_on_database_errors: true
+      role: PC_DBT_ROLE
+      schema: dbt_LFerreiradaRocha
+      threads: 2
+      type: snowflake
+      user: PC_DBT_USER
+      warehouse: PC_DBT_WH
+  target: default

@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: fct_partd_prescriptions
+    columns:
+      - name: prscrbr_npi
+        tests:
+          - not_null
+
+      - name: report_year
+        tests:
+          - not_null

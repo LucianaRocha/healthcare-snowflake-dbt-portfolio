@@ -1,0 +1,230 @@
+==================== 2026-04-30T19:32:07.723711Z | 9ab1b434-4444-4c10-a159-7700fbe27dc5 ====================
+19:32:07.723742 [info ]: Starting dbt LSP server
+19:32:07.723756 [info ]: Connecting to LSP client on port 39683
+19:32:07.723932 [info ]: Successfully connected to LSP client
+19:32:07.723941 [info ]: Creating LSP service...
+19:32:07.778095 [info ]: Creating LSP server...
+19:32:07.778122 [info ]: Starting LSP server...
+19:32:07.914217 [info ]: Loading profiles.yml
+19:32:07.973949 [info ]: Waiting for lease on 'target' directory
+19:32:08.573897 [info ]: Started loading project
+19:32:08.574209 [info ]: Loading profiles.yml
+19:32:08.580394 [debug]:    Started loading packages
+19:32:08.581159 [debug]:     Loaded [  0.00s] packages
+19:32:08.581862 [info ]: Started parsing
+19:32:08.609476 [info ]: Finished loading project [  0.04s]
+19:32:08.610147 [debug]: Finished parsing models/analytics/schema.yml [  0.00s]
+19:32:08.610238 [debug]: Finished parsing models/marts/schema.yml [  0.00s]
+19:32:08.610302 [debug]: Finished parsing models/staging/schema.yml [  0.00s]
+19:32:08.610371 [debug]: Finished parsing models/staging/sources.yml [  0.00s]
+19:32:08.611966 [debug]: Finished parsing models/analytics/dim_geography.sql [  0.00s]
+19:32:08.612367 [debug]: Finished parsing models/analytics/fct_partd_prescriptions.sql [  0.00s]
+19:32:08.612694 [debug]: Finished parsing models/marts/mart_drug_spend_by_state.sql [  0.00s]
+19:32:08.614963 [debug]: Finished parsing models/staging/stg_partd_prescribers.sql [  0.00s]
+19:32:08.615958 [info ]: Finished parsing [  0.03s]
+19:32:08.616123 [info ]: Cached model count updated: 4 models (estimate)
+19:32:08.616137 [info ]: Cached model count updated: 4 models (accurate)
+19:32:08.616172 [info ]: Started scheduling
+19:32:08.616218 [info ]: Finished scheduling [  0.00s]
+19:32:08.616229 [debug]: Compilation - 0 nodes selected: {}
+19:32:08.616242 [warn ]: dbt1092: The selection criterion '' does not match any enabled nodes
+19:32:08.616253 [warn ]: dbt1601: Nothing to do. Try checking your model configs and model specification args
+19:32:08.616273 [info ]: Started scheduling
+19:32:08.616315 [info ]: Finished scheduling [  0.00s]
+19:32:08.616380 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "MEDICARE_ANALYTICS_DB", schema: "RAW", table: "PARTD_PRESCRIBERS" }) and interval: None
+19:32:08.742980 [info ]: Started building task graph
+19:32:08.743058 [info ]: Finished building task graph [  0.00s]
+19:32:08.746097 [info ]: Started scheduling
+19:32:08.746145 [info ]: Finished scheduling [  0.00s]
+19:32:08.746658 [info ]: Cached model count updated: 4 models (accurate)
+19:32:10.984034 [info ]: Started loading project
+19:32:10.984388 [info ]: Loading profiles.yml
+19:32:11.001682 [info ]: Cached model count updated: 4 models (estimate)
+19:32:11.001704 [info ]: Cached model count updated: 4 models (accurate)
+19:32:11.001724 [info ]: Started scheduling
+19:32:11.001784 [info ]: Finished scheduling [  0.00s]
+19:32:11.001799 [debug]: Compilation - 4 nodes selected: {"model.medicare_partd_dbt.dim_geography", "model.medicare_partd_dbt.fct_partd_prescriptions", "model.medicare_partd_dbt.mart_drug_spend_by_state", "model.medicare_partd_dbt.stg_partd_prescribers"}
+19:32:11.126841 [info ]: Started building task graph
+19:32:11.126946 [info ]: Finished building task graph [  0.00s]
+19:32:11.127105 [info ]: Started rendering (4 nodes)
+19:32:11.127128 [info ]: Started model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:11.127146 [debug]: Started rendering model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:11.127170 [info ]: Started model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:11.127178 [debug]: Started rendering model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:11.127188 [info ]: Started model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:11.127196 [debug]: Started rendering model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:11.127205 [info ]: Started model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:11.127212 [debug]: Started rendering model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:11.127215 [info ]: Finished loading project [  0.14s]
+19:32:11.128022 [debug]: Compiled SQL for node model.medicare_partd_dbt.stg_partd_prescribers at target/.lsp/compiled/medicare_partd_dbt/models/staging/stg_partd_prescribers.sql
+19:32:11.128022 [debug]: Compiled SQL for node model.medicare_partd_dbt.mart_drug_spend_by_state at target/.lsp/compiled/medicare_partd_dbt/models/marts/mart_drug_spend_by_state.sql
+19:32:11.128096 [debug]: Compiled SQL for node model.medicare_partd_dbt.fct_partd_prescriptions at target/.lsp/compiled/medicare_partd_dbt/models/analytics/fct_partd_prescriptions.sql
+19:32:11.128146 [debug]: Compiled SQL for node model.medicare_partd_dbt.dim_geography at target/.lsp/compiled/medicare_partd_dbt/models/analytics/dim_geography.sql
+19:32:11.128233 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers [success]
+19:32:11.128282 [info ]: Started analyzing (4 nodes)
+19:32:11.128296 [debug]: Started analyzing model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:11.128322 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state [success]
+19:32:11.128337 [debug]: Started analyzing model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:11.128363 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions [success]
+19:32:11.128376 [debug]: Started analyzing model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:11.128396 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_analytics.dim_geography [success]
+19:32:11.128405 [info ]: Finished rendering [  0.00s] (4 nodes, 0 skipped, 0 errors)
+19:32:11.128413 [debug]: Started analyzing model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:11.138518 [debug]: Finished analyzing [  0.01s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers [success]
+19:32:11.138552 [info ]:  Succeeded [  0.01s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers (view)
+19:32:11.139390 [debug]: Finished analyzing [  0.01s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions [success]
+19:32:11.139415 [info ]:  Succeeded [  0.01s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions (view)
+19:32:11.142815 [debug]: Finished analyzing [  0.01s] model dbt_LFerreiradaRocha_analytics.dim_geography [success]
+19:32:11.142841 [info ]:  Succeeded [  0.01s] model dbt_LFerreiradaRocha_analytics.dim_geography (view)
+19:32:11.147816 [debug]: Finished analyzing [  0.02s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state [success]
+19:32:11.147845 [info ]: Finished analyzing [  0.02s] (4 nodes, 0 skipped, 0 errors)
+19:32:11.147852 [info ]:  Succeeded [  0.02s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state (table)
+19:32:11.151623 [info ]: Started scheduling
+19:32:11.151691 [info ]: Finished scheduling [  0.00s]
+19:32:11.152691 [info ]: Cached model count updated: 4 models (accurate)
+==================== 2026-04-30T19:32:30.329787Z | 4401a089-07b8-414f-b851-5fe8401dfa54 ====================
+19:32:30.329814 [info ]: Starting dbt LSP server
+19:32:30.329831 [info ]: Connecting to LSP client on port 54965
+19:32:30.329969 [info ]: Successfully connected to LSP client
+19:32:30.329980 [info ]: Creating LSP service...
+19:32:30.396973 [info ]: Creating LSP server...
+19:32:30.397007 [info ]: Starting LSP server...
+19:32:30.534260 [info ]: Loading profiles.yml
+19:32:30.694067 [info ]: Waiting for lease on 'target' directory
+19:32:31.193876 [info ]: Started loading project
+19:32:31.194183 [info ]: Loading profiles.yml
+19:32:31.200423 [debug]:    Started loading packages
+19:32:31.201147 [debug]:     Loaded [  0.00s] packages
+19:32:31.201831 [info ]: Started parsing
+19:32:31.230317 [info ]: Finished loading project [  0.04s]
+19:32:31.231165 [debug]: Finished parsing models/analytics/schema.yml [  0.00s]
+19:32:31.231289 [debug]: Finished parsing models/marts/schema.yml [  0.00s]
+19:32:31.231381 [debug]: Finished parsing models/staging/schema.yml [  0.00s]
+19:32:31.231476 [debug]: Finished parsing models/staging/sources.yml [  0.00s]
+19:32:31.233253 [debug]: Finished parsing models/analytics/dim_geography.sql [  0.00s]
+19:32:31.233690 [debug]: Finished parsing models/analytics/fct_partd_prescriptions.sql [  0.00s]
+19:32:31.234122 [debug]: Finished parsing models/marts/mart_drug_spend_by_state.sql [  0.00s]
+19:32:31.236553 [debug]: Finished parsing models/staging/stg_partd_prescribers.sql [  0.00s]
+19:32:31.237584 [info ]: Finished parsing [  0.04s]
+19:32:31.237769 [info ]: Cached model count updated: 4 models (estimate)
+19:32:31.237783 [info ]: Cached model count updated: 4 models (accurate)
+19:32:31.237821 [info ]: Started scheduling
+19:32:31.237867 [info ]: Finished scheduling [  0.00s]
+19:32:31.237878 [debug]: Compilation - 0 nodes selected: {}
+19:32:31.237893 [warn ]: dbt1092: The selection criterion '' does not match any enabled nodes
+19:32:31.237907 [warn ]: dbt1601: Nothing to do. Try checking your model configs and model specification args
+19:32:31.237914 [info ]: Started scheduling
+19:32:31.237967 [info ]: Finished scheduling [  0.00s]
+19:32:31.238035 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "MEDICARE_ANALYTICS_DB", schema: "RAW", table: "PARTD_PRESCRIBERS" }) and interval: None
+19:32:31.375815 [info ]: Started building task graph
+19:32:31.375866 [info ]: Finished building task graph [  0.00s]
+19:32:31.378797 [info ]: Started scheduling
+19:32:31.378844 [info ]: Finished scheduling [  0.00s]
+19:32:31.379316 [info ]: Cached model count updated: 4 models (accurate)
+19:32:33.443944 [info ]: Started loading project
+19:32:33.444243 [info ]: Loading profiles.yml
+19:32:33.465100 [info ]: Cached model count updated: 4 models (estimate)
+19:32:33.465127 [info ]: Cached model count updated: 4 models (accurate)
+19:32:33.465148 [info ]: Started scheduling
+19:32:33.465211 [info ]: Finished scheduling [  0.00s]
+19:32:33.465227 [debug]: Compilation - 4 nodes selected: {"model.medicare_partd_dbt.dim_geography", "model.medicare_partd_dbt.fct_partd_prescriptions", "model.medicare_partd_dbt.mart_drug_spend_by_state", "model.medicare_partd_dbt.stg_partd_prescribers"}
+19:32:33.589858 [info ]: Started building task graph
+19:32:33.589964 [info ]: Finished building task graph [  0.00s]
+19:32:33.590118 [info ]: Started rendering (4 nodes)
+19:32:33.590141 [info ]: Started model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:33.590158 [debug]: Started rendering model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:33.590185 [info ]: Started model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:33.590193 [debug]: Started rendering model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:33.590200 [info ]: Started model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:33.590208 [debug]: Started rendering model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:33.590218 [info ]: Started model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:33.590226 [debug]: Started rendering model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:33.590233 [info ]: Finished loading project [  0.15s]
+19:32:33.590978 [debug]: Compiled SQL for node model.medicare_partd_dbt.dim_geography at target/.lsp/compiled/medicare_partd_dbt/models/analytics/dim_geography.sql
+19:32:33.590985 [debug]: Compiled SQL for node model.medicare_partd_dbt.fct_partd_prescriptions at target/.lsp/compiled/medicare_partd_dbt/models/analytics/fct_partd_prescriptions.sql
+19:32:33.590992 [debug]: Compiled SQL for node model.medicare_partd_dbt.mart_drug_spend_by_state at target/.lsp/compiled/medicare_partd_dbt/models/marts/mart_drug_spend_by_state.sql
+19:32:33.591032 [debug]: Compiled SQL for node model.medicare_partd_dbt.stg_partd_prescribers at target/.lsp/compiled/medicare_partd_dbt/models/staging/stg_partd_prescribers.sql
+19:32:33.591085 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions [success]
+19:32:33.591125 [info ]: Started analyzing (4 nodes)
+19:32:33.591140 [debug]: Started analyzing model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions
+19:32:33.591169 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state [success]
+19:32:33.591183 [debug]: Started analyzing model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state
+19:32:33.591203 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers [success]
+19:32:33.591216 [debug]: Started analyzing model dbt_LFerreiradaRocha_staging.stg_partd_prescribers
+19:32:33.591236 [debug]: Finished rendering [  0.00s] model dbt_LFerreiradaRocha_analytics.dim_geography [success]
+19:32:33.591244 [info ]: Finished rendering [  0.00s] (4 nodes, 0 skipped, 0 errors)
+19:32:33.591250 [debug]: Started analyzing model dbt_LFerreiradaRocha_analytics.dim_geography
+19:32:33.600496 [debug]: Finished analyzing [  0.01s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers [success]
+19:32:33.600529 [info ]:  Succeeded [  0.01s] model dbt_LFerreiradaRocha_staging.stg_partd_prescribers (view)
+19:32:33.601325 [debug]: Finished analyzing [  0.01s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions [success]
+19:32:33.601351 [info ]:  Succeeded [  0.01s] model dbt_LFerreiradaRocha_analytics.fct_partd_prescriptions (view)
+19:32:33.606736 [debug]: Finished analyzing [  0.02s] model dbt_LFerreiradaRocha_analytics.dim_geography [success]
+19:32:33.606771 [info ]:  Succeeded [  0.02s] model dbt_LFerreiradaRocha_analytics.dim_geography (view)
+19:32:33.611604 [debug]: Finished analyzing [  0.02s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state [success]
+19:32:33.611631 [info ]: Finished analyzing [  0.02s] (4 nodes, 0 skipped, 0 errors)
+19:32:33.611642 [info ]:  Succeeded [  0.02s] model dbt_LFerreiradaRocha_marts.mart_drug_spend_by_state (table)
+19:32:33.614745 [info ]: Started scheduling
+19:32:33.614793 [info ]: Finished scheduling [  0.00s]
+19:32:33.615752 [info ]: Cached model count updated: 4 models (accurate)
+19:41:35.363992 [info ]: Loading profiles.yml
+19:41:35.494446 [info ]: Started loading project
+19:41:35.494736 [info ]: Loading profiles.yml
+19:41:35.514311 [info ]: Finished loading project [  0.02s]
+19:41:35.514519 [info ]: Cached model count updated: 4 models (accurate)
+19:41:37.003868 [info ]: Loading profiles.yml
+19:41:37.473966 [info ]: Cached model count updated: 4 models (accurate)
+19:41:37.474071 [info ]: Waiting for lease on 'target' directory
+19:41:38.043403 [info ]: Cached model count updated: 4 models (accurate)
+19:41:38.043531 [info ]: Waiting for lease on 'target' directory
+19:41:38.604020 [info ]: Started loading project
+19:41:38.604429 [info ]: Loading profiles.yml
+19:41:38.637544 [info ]: Finished loading project [  0.03s]
+19:41:38.637864 [info ]: Cached model count updated: 4 models (accurate)
+19:41:38.853448 [info ]: Waiting for lease on 'target' directory
+19:41:39.103881 [info ]: Started loading project
+19:41:39.104506 [info ]: Loading profiles.yml
+19:41:39.129346 [info ]: Finished loading project [  0.03s]
+19:41:39.129544 [info ]: Cached model count updated: 4 models (accurate)
+19:41:39.813894 [info ]: Started loading project
+19:41:39.814165 [info ]: Loading profiles.yml
+19:41:39.832732 [info ]: Finished loading project [  0.02s]
+19:41:39.832912 [info ]: Cached model count updated: 4 models (accurate)
+19:41:40.784156 [info ]: Started loading project
+19:41:40.784242 [info ]: Finished loading project [  0.00s]
+19:41:40.784422 [info ]: Cached model count updated: 4 models (accurate)
+19:41:41.624168 [info ]: Started loading project
+19:41:41.624226 [info ]: Finished loading project [  0.00s]
+19:41:41.624336 [info ]: Cached model count updated: 4 models (accurate)
+19:41:42.534178 [info ]: Started loading project
+19:41:42.534239 [info ]: Finished loading project [  0.00s]
+19:41:42.534341 [info ]: Cached model count updated: 4 models (accurate)
+19:41:43.993897 [info ]: Started loading project
+19:41:43.993966 [info ]: Finished loading project [  0.00s]
+19:41:43.994073 [info ]: Cached model count updated: 4 models (accurate)
+==================== 2026-04-30T19:45:54.423302Z | cb2826cc-8923-4f58-a62e-f0a5e1a7ae9b ====================
+19:45:54.423331 [info ]: Starting dbt LSP server
+19:45:54.423344 [info ]: Connecting to LSP client on port 47615
+19:45:54.423503 [info ]: Successfully connected to LSP client
+19:45:54.423511 [info ]: Creating LSP service...
+19:45:54.481267 [info ]: Creating LSP server...
+19:45:54.481297 [info ]: Starting LSP server...
+19:45:54.795858 [info ]: Started loading project
+19:45:54.795956 [info ]: Finished loading project [  0.00s]
+==================== 2026-04-30T19:46:05.388939Z | d4eadce3-63dd-4a2d-b63e-9a333e18f091 ====================
+19:46:05.388975 [info ]: Starting dbt LSP server
+19:46:05.388993 [info ]: Connecting to LSP client on port 37387
+19:46:05.389135 [info ]: Successfully connected to LSP client
+19:46:05.389143 [info ]: Creating LSP service...
+19:46:05.444753 [info ]: Creating LSP server...
+19:46:05.444781 [info ]: Starting LSP server...
+19:46:05.718906 [info ]: Started loading project
+19:46:05.718999 [info ]: Finished loading project [  0.00s]
+==================== 2026-04-30T19:46:16.427086Z | d1998339-84ca-4065-973e-710480b06d67 ====================
+19:46:16.427124 [info ]: Starting dbt LSP server
+19:46:16.427144 [info ]: Connecting to LSP client on port 56325
+19:46:16.427302 [info ]: Successfully connected to LSP client
+19:46:16.427312 [info ]: Creating LSP service...
+19:46:16.482694 [info ]: Creating LSP server...
+19:46:16.482721 [info ]: Starting LSP server...
+19:46:16.797929 [info ]: Started loading project
+19:46:16.798022 [info ]: Finished loading project [  0.00s]
