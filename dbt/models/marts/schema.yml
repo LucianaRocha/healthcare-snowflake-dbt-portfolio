@@ -1,16 +1,127 @@
 version: 2
 
 models:
+
   - name: mart_drug_spend_by_state
+    description: "Aggregated drug spend metrics by state and year."
+
     columns:
       - name: state_code
+        description: "Two-letter state abbreviation."
         tests:
           - not_null
 
       - name: report_year
+        description: "Reporting year."
         tests:
           - not_null
 
       - name: total_drug_spend
+        description: "Total drug cost aggregated at state level."
         tests:
           - not_null
+
+      - name: total_claims
+        description: "Total number of claims."
+
+      - name: total_beneficiaries
+        description: "Total number of beneficiaries."
+
+      - name: total_prescribers
+        description: "Distinct count of prescribers."
+
+      - name: avg_cost_per_claim
+        description: "Average cost per claim."
+
+
+  - name: mart_specialty_summary
+    description: "Drug spend and utilization metrics by prescriber specialty."
+
+    columns:
+      - name: specialty
+        description: "Prescriber specialty."
+        tests:
+          - not_null
+
+      - name: specialty_group
+        description: "Grouped specialty category (Primary Care, Specialist, etc)."
+
+      - name: report_year
+        description: "Reporting year."
+
+      - name: total_drug_spend
+        description: "Total drug cost by specialty."
+        tests:
+          - not_null
+
+      - name: total_claims
+        description: "Total number of claims."
+
+      - name: total_beneficiaries
+        description: "Total number of beneficiaries."
+
+      - name: total_prescribers
+        description: "Distinct count of prescribers."
+
+      - name: avg_cost_per_claim
+        description: "Average cost per claim."
+
+
+  - name: mart_top_prescribers
+    description: "Detailed metrics at the prescriber level for ranking and drill-down analysis."
+
+    columns:
+      - name: prscrbr_npi
+        description: "Unique identifier for prescriber."
+        tests:
+          - not_null
+
+      - name: report_year
+        description: "Reporting year."
+
+      - name: total_drug_spend
+        description: "Total drug spend by prescriber."
+        tests:
+          - not_null
+
+      - name: total_claims
+        description: "Total claims by prescriber."
+
+      - name: total_beneficiaries
+        description: "Total beneficiaries served."
+
+      - name: avg_cost_per_claim
+        description: "Average cost per claim."
+
+
+  - name: mart_brand_generic_summary
+    description: "Comparison of brand vs generic drug utilization and cost."
+
+    columns:
+      - name: brand_generic
+        description: "Indicates whether the drug is Brand or Generic."
+        tests:
+          - not_null
+
+      - name: report_year
+        description: "Reporting year."
+
+      - name: total_drug_spend
+        description: "Total drug spend."
+        tests:
+          - not_null
+
+      - name: total_claims
+        description: "Total number of claims."
+
+      - name: total_beneficiaries
+        description: "Total number of beneficiaries."
+
+      - name: total_prescribers
+        description: "Distinct count of prescribers."
+
+      - name: avg_cost_per_claim
+        description: "Average cost per claim."
+
+      - name: avg_cost_per_beneficiary
+        description: "Average cost per beneficiary."
