@@ -2,6 +2,7 @@ SELECT
     prscrbr_npi,
     prscrbr_last_org_name,
     prscrbr_first_name,
+    COALESCE(prscrbr_type, 'Unknown') AS prscrbr_type,
     prscrbr_city,
     prscrbr_state_abrvtn,
 
