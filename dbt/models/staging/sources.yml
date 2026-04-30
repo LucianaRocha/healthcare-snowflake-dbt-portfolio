@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw
+    database: MEDICARE_ANALYTICS_DB
+    schema: RAW
+    tables:
+      - name: PARTD_PRESCRIBERS
