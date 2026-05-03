@@ -1,5 +1,22 @@
-# Medicare Part D Analytics Platform  
-### CMS Medicare Data → Python → AWS S3 → Snowflake → dbt → Tableau
+# Medicare Part D Analytics Platform
+
+Production-style healthcare analytics platform built with a modern cloud data stack:
+
+**Python → AWS S3 → Snowflake → dbt → Tableau**
+
+[Live Dashboard (Tableau Public)](https://public.tableau.com/app/profile/lucianarocha/vizzes) 
+---
+
+Transforming real CMS Medicare Part D data into scalable, analytics-ready insights.
+
+This project simulates a real-world data platform used by healthcare and analytics teams to:
+
+- Analyze drug spend across the United States
+- Understand prescriber behavior and specialty trends
+- Identify high-cost providers and optimization opportunities
+- Deliver executive-ready dashboards
+
+---
 
 ![Status](https://img.shields.io/badge/status-active%20development-success)
 ![Snowflake](https://img.shields.io/badge/Snowflake-29B5E8?logo=snowflake&logoColor=white)
@@ -8,198 +25,266 @@
 ![AWS S3](https://img.shields.io/badge/AWS%20S3-232F3E?logo=amazonaws&logoColor=white)
 ![Tableau](https://img.shields.io/badge/Tableau-E97627?logo=tableau&logoColor=white)
 
----
+## 🚀 What This Project Demonstrates
 
-# Executive Summary
+This project is designed to reflect real-world data engineering and analytics workflows, focusing on production-style patterns rather than isolated tasks.
 
-Production-style healthcare analytics platform built using **real CMS Medicare Part D public data** and a modern cloud data stack.
+### End-to-End Data Pipeline
+- Designed and implemented a complete pipeline from raw CMS data to business-ready dashboards
+- Orchestrated data flow across Python, AWS S3, Snowflake, dbt, and Tableau
 
-This project demonstrates how enterprise-scale healthcare data can be:
+### Scalable Data Lake Architecture
+- Built a partitioned AWS S3 data lake using year-based structure
+- Implemented compressed storage (.csv.gz) for performance and cost optimization
 
-- Ingested with Python
-- Optimized and stored in AWS S3
-- Loaded into Snowflake
-- Modeled using dbt
-- Tested and documented
-- Visualized in Tableau
+### Production-Ready Ingestion Patterns
+- Developed parameterized ingestion pipeline supporting multi-year data loads
+- Ensured idempotent execution (safe re-runs without duplication)
+- Automated metadata enrichment using `REPORT_YEAR`
 
-Designed to showcase practical capabilities for:
+### Modern Data Modeling (dbt)
+- Applied dimensional modeling (fact + dimensions) for analytics use cases
+- Structured transformations into staging, analytics, and mart layers
+- Prepared models for testing, documentation, and scalability
 
-- Analytics Engineer
-- Data Engineer
-- Senior BI Developer
-- Healthcare / Pharma Analytics
-- Snowflake Developer
+### Cloud Data Warehouse Design (Snowflake)
+- Separated storage and compute for efficient processing
+- Designed RAW → STAGING → ANALYTICS → MART layers
+- Optimized for large-scale analytical queries
 
-## Production Design Patterns
+### Business-Focused Analytics
+- Translated raw healthcare data into meaningful insights
+- Built datasets to support executive dashboards and decision-making
+- Focused on real use cases: drug spend, provider behavior, and cost trends
 
-This project applies real-world data engineering patterns:
-
-- Incremental multi-year ingestion
-- Partitioned data lake design (S3)
-- Idempotent pipeline execution (safe re-runs)
-- Separation of storage and compute (Snowflake)
-- Modular transformations (dbt)
-- Data validation and testing
-
----
-
-# Project Highlights
-
-- **3.61 GB** raw CMS source file
-- **691 MB compressed** GZIP cloud landing file
-- **26.79+ million rows** loaded to Snowflake
-- **Multi-year ingestion architecture**
-- **Dynamic parameterized pipeline**
-- **Partitioned S3 data lake structure**
-- **dbt dimensional modeling layer**
-- **Interactive Tableau dashboards**
-- **Real healthcare business use case**
-
----
-
-# Current Status
-
-| Layer | Status |
-|---|---|
-| Python Ingestion Pipeline | ✅ Complete |
-| AWS S3 Landing Zone | ✅ Complete |
-| Snowflake RAW Layer | ✅ Complete |
-| Multi-Year Architecture | ✅ Complete |
-| dbt Modeling Layer | 🔄 In Progress |
-| Tableau Dashboards | ⬜ Planned |
-
----
-
-# Business Problem
-
-Healthcare organizations need reliable analytics platforms to answer questions such as:
-
-- Which states drive the highest Medicare drug spend?
-- Which specialties generate the most prescription volume?
-- Which providers prescribe the highest-cost drugs?
-- How is generic adoption changing over time?
-- Where are provider concentrations highest?
-
-This project simulates a real production analytics environment focused on business decision-making.
-
----
-
-## Architecture
+## 🏗️ Architecture
+> Designed using production data engineering patterns: decoupled storage, scalable compute, and modular transformations.
 
 ![Architecture](docs/architecture.png)
 
+This platform follows a modern cloud data architecture pattern, separating ingestion, storage, transformation, and analytics layers.
+
+### Data Flow Overview
+
+1. **Source Data (CMS Medicare Part D)**
+   - Raw healthcare data ingested from public CMS datasets
+
+2. **Ingestion Layer (Python)**
+   - Validates source files
+   - Adds metadata (`REPORT_YEAR`)
+   - Compresses data to `.csv.gz`
+   - Uploads to AWS S3
+
+3. **Cloud Storage (AWS S3)**
+   - Partitioned data lake (`year=YYYY`)
+   - Optimized for scalable storage and downstream processing
+
+4. **Query Layer (Amazon Athena)**
+   - Enables direct querying and validation of raw data in S3
+   - Supports partition repair and schema checks
+
+5. **Data Warehouse (Snowflake)**
+   - External stage connected to S3
+   - RAW layer stores ingested data
+   - Scalable compute for transformations and analytics
+
+6. **Transformation Layer (dbt)**
+   - Staging models for cleaning and standardization
+   - Dimensional modeling (facts and dimensions)
+   - Data marts for business use cases
+
+7. **Visualization Layer (Tableau)**
+   - Interactive dashboards for business insights
+   - Executive-ready analytics and reporting
+
+## 📊 Business Context & Use Case
+
+Healthcare organizations and analytics teams rely on large-scale data platforms to monitor cost, utilization, and provider behavior.
+
+This project simulates a real-world analytics environment focused on **Medicare Part D prescription data**, enabling stakeholders to answer critical business questions.
+
+### Key Questions Answered
+
+- Which states drive the highest Medicare drug spend?
+- Which medical specialties generate the most prescription volume?
+- Who are the highest-cost prescribers in the system?
+- How does drug spending evolve year over year?
+- What is the impact of brand vs. generic drug usage?
+
+### Business Impact
+
+The platform transforms raw healthcare data into structured insights that support:
+
+- **Cost optimization** initiatives across regions and providers  
+- **Policy and compliance analysis** in public healthcare systems  
+- **Operational decision-making** for healthcare organizations  
+- **Executive reporting** through interactive dashboards  
+
+### Why This Matters
+
+Healthcare data is complex, high-volume, and critical for decision-making.
+
+This project demonstrates how to convert raw, multi-year datasets into a scalable analytics platform that delivers **actionable insights**, not just data.
+
+## 🧱 Data Model
+> Designed following Kimball-style dimensional modeling principles.
+The platform follows a **dimensional modeling approach (star schema)** optimized for analytical queries and dashboard performance.
+
+### Fact Table
+
+- **fct_partd_prescriptions**
+  - **Grain:** One record per **Prescriber + Drug + Year**
+  - **Purpose:** Central table capturing prescription activity and financial metrics
+
+**Key Measures:**
+- Total Claims (`tot_clms`)
+- Total Beneficiaries (`tot_benes`)
+- Total Drug Cost (`tot_drug_cst`)
+- Total Day Supply (`tot_day_suply`)
+
 ---
 
-## Data Sources
+### Dimension Tables
 
-| Dataset | Source | Format | Description |
-|---|---|---|---|
-| Medicare Part D Prescribers | [CMS data.gov](https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/medicare-part-d-prescribers-by-provider-and-drug) | CSV | Prescription drugs prescribed by providers, paid under Medicare Part D. Organized by NPI, drug name, total fills, and total cost. |
+- **dim_prescriber**
+  - Prescriber identifier (NPI)
+  - Provider name and attributes
 
-### 1. Medicare Part D Prescribers
+- **dim_drug**
+  - Brand name
+  - Generic name
 
-Dataset contains:
+- **dim_geography**
+  - State and regional attributes
 
-- Drug name
-- Prescriber NPI
-- Provider specialty
-- Brand drug name
-- Generic drug name
-- State
-- Total claims
-- Total fills
-- Total beneficiaries
-- Total drug cost
-
+- **dim_specialty**
+  - Provider specialty classification
 
 ---
 
-## Tech Stack
+### Modeling Strategy
+
+- Separate **facts and dimensions** to enable flexible aggregation
+- Designed for **high-performance analytical queries**
+- Supports **multi-dimensional slicing** (state, specialty, drug, year)
+- Built to scale with additional years and datasets
+
+---
+
+### Data Flow into the Model
+
+- RAW layer stores ingested CMS data
+- STAGING layer standardizes and cleans fields
+- ANALYTICS layer builds reusable dimensions and fact tables
+- MARTS layer delivers aggregated datasets for dashboards
+
+---
+
+### Why This Design
+
+This structure enables:
+
+- Fast aggregation for large datasets (millions of rows)
+- Clear separation between raw data and business logic
+- Reusability across multiple dashboards and use cases
+- Alignment with industry-standard data warehouse practices
+
+## ⚙️ Tech Stack
 
 | Layer | Tool | Purpose |
 |---|---|---|
-| Data Source | CMS Medicare Part D Prescribers | Real public healthcare dataset for prescription drug spend analytics |
-| Ingestion | Python, pandas, boto3 | Validate source files, add metadata, compress CSV files, and upload to S3 |
-| Cloud Storage | AWS S3 | Partitioned raw data lake organized by report year |
-| Query Layer | Amazon Athena | Optional validation and raw data exploration over S3 partitions |
-| Data Warehouse | Snowflake | RAW storage, scalable compute, and analytics serving layer |
-| Transformation | dbt | Staging models, dimensions, facts, marts, tests, and documentation |
-| Visualization | Tableau Public | Executive dashboards and public portfolio reporting |
+| Data Source | CMS Medicare Part D | Real public healthcare dataset |
+| Ingestion | Python, pandas | File validation, metadata enrichment, compression |
+| Cloud Storage | AWS S3 | Partitioned raw data lake |
+| Query Validation | Amazon Athena | Raw data validation over S3 |
+| Data Warehouse | Snowflake | Scalable storage and analytical compute |
+| Transformation | dbt | Staging, dimensional modeling, data marts, tests |
+| Visualization | Tableau Public | Interactive dashboards and executive reporting |
 | Version Control | GitHub | Code, documentation, and project history |
 
----
 
-## Snowflake Schema Design
+## 📈 Key Metrics & Scale
 
-```text
-MEDICARE_ANALYTICS_DB
+This project processes real-world healthcare data at meaningful scale, reflecting production-style data workloads.
 
-├── RAW
-│   └── PARTD_PRESCRIBERS
-│       • Multi-year Medicare Part D source data
-│       • Loaded from AWS S3 compressed CSV files
-│       • Includes REPORT_YEAR metadata column
-
-├── STAGING
-│   └── STG_PARTD_PRESCRIBERS
-│       • Cleaned and standardized source model
-│       • Renamed columns
-│       • Data quality preparation layer
-
-├── ANALYTICS
-│   ├── DIM_PRESCRIBER
-│   ├── DIM_DRUG
-│   ├── DIM_GEOGRAPHY
-│   ├── DIM_SPECIALTY
-│   └── FCT_PARTD_PRESCRIPTIONS
-
-└── MARTS
-    ├── MART_DRUG_SPEND_BY_STATE
-    ├── MART_SPECIALTY_SUMMARY
-    ├── MART_TOP_PRESCRIBERS
-    └── MART_BRAND_GENERIC_SUMMARY
-```
+- **26.7M+ rows** loaded into Snowflake  
+- **3.6 GB** raw CMS dataset  
+- **~700 MB** compressed cloud storage (.csv.gz)  
+- **3 years of data** (2021–2023)  
+- **Multi-year ingestion architecture** with parameterized loads  
+- **Partitioned data lake** structure in AWS S3 (`year=YYYY`)  
 
 ---
 
-## Repository Structure
+### Performance & Design Considerations
 
-```text
-healthcare-snowflake-dbt-portfolio/
+- Reduced storage footprint using compression (~80% reduction)
+- Optimized query performance through dimensional modeling
+- Enabled scalable ingestion through year-based partitioning
+- Designed for efficient reprocessing and incremental expansion
 
-├── ingestion/
-│   ├── ingest_partd.py
-│   └── requirements.txt
+## 📊 Dashboards
 
-├── dbt/
-│   ├── models/
-│   │   ├── staging/
-│   │   ├── analytics/
-│   │   └── marts/
-│   ├── tests/
-│   ├── macros/
-│   ├── seeds/
-│   └── dbt_project.yml
+Interactive dashboards built in Tableau to translate raw healthcare data into business insights.
 
-├── docs/
-│   ├── architecture.png
-│   ├── schema.sql
-│   ├── dashboard_mockups/
-│   └── screenshots/
-
-├── sql/
-│   ├── snowflake_setup.sql
-│   └── validation_queries.sql
-
-├── .gitignore
-├── README.md
-└── requirements.txt
-```
-
-
+👉 **Live Dashboards:**
+- [Drug Spend by State](https://public.tableau.com/app/profile/lucianarocha/viz/MedicarePartDDrugSpendbyState/Dash-drug_spend_by_state)
+- [Specialty Summary](https://public.tableau.com/app/profile/lucianarocha/viz/mart_specialty_summary/mart_specialty_summary)
 
 ---
+
+### Drug Spend by State
+
+Analyzes total Medicare Part D drug spending across U.S. states.
+
+**Highlights:**
+- Geographic distribution of drug costs
+- Year-over-year spend trends
+- Identification of high-cost regions
+
+---
+
+### Specialty Summary
+
+Provides insights into prescription activity by medical specialty.
+
+**Highlights:**
+- Total claims and beneficiaries by specialty
+- Average cost per claim
+- Specialty-level performance comparison
+- KPI-driven overview for quick analysis
+
+---
+
+### Top Prescribers *(Planned)*
+
+Identifies providers with the highest prescription volume and cost.
+
+**Planned insights:**
+- Top providers by total drug spend
+- Ranking by total claims and beneficiaries
+- High-impact prescriber segmentation
+
+---
+
+### Brand vs Generic Analysis *(Planned)*
+
+Evaluates cost differences between brand-name and generic drugs.
+
+**Planned insights:**
+- Cost distribution by drug type
+- Trends in generic adoption
+- Potential cost-saving opportunities
+
+---
+
+### Dashboard Features
+
+- Interactive filters (year, state, specialty)
+- KPI-driven summaries
+- Drill-down capabilities
+- Designed for executive-level consumption
+
 
 ## How to Run the Ingestion Pipeline
 
@@ -388,139 +473,67 @@ This project demonstrates production-style ingestion patterns used in modern dat
 
 ---
 
-## dbt Transformation Layer (In Progress)
+## 🎯 Why This Project Matters
 
-The dbt layer transforms raw Medicare data into analytics-ready models following a layered architecture:
+Many portfolio projects rely on small or synthetic datasets and focus only on isolated tools.
 
-- **STAGING**
-  - Column standardization
-  - Data type casting
-  - Null handling
-  - Metadata enrichment
+This project takes a different approach.
 
-- **ANALYTICS**
-  - Dimensional modeling (star schema)
-  - Fact table for prescriptions
-  - Reusable dimension tables
+It uses **real CMS healthcare data** and applies production-style data engineering and analytics patterns to simulate how modern data platforms are built and used in practice.
 
-- **MARTS**
-  - Business-focused aggregations
-  - Optimized for Tableau dashboards
+### What Makes This Project Different
 
-### Example dbt Model
+- Built on **real-world healthcare data**, not toy datasets  
+- Designed as a **complete analytics platform**, not a single script or dashboard  
+- Applies **production patterns** such as partitioned data lakes, idempotent pipelines, and layered modeling  
+- Focused on **business outcomes**, not just technical implementation  
 
-```sql
-SELECT
-    prscrbr_npi        AS prescriber_npi,
-    tot_clms::NUMBER   AS total_claims,
-    tot_benes::NUMBER  AS total_beneficiaries,
-    tot_drug_cst::FLOAT AS total_drug_cost,
-    report_year
-FROM {{ source('raw', 'partd_prescribers') }}
-```
+### Real-World Relevance
 
----
+The architecture and design decisions in this project reflect challenges faced by:
 
-## Data Modeling Strategy
+- Healthcare and pharma analytics teams  
+- Data engineering and analytics engineering teams  
+- Organizations working with large-scale public datasets  
 
-The project follows a dimensional modeling approach:
+### Outcome
 
-- **Fact Table**
-  - `fct_partd_prescriptions`
-  - Grain: Prescriber + Drug + Year
+This project demonstrates the ability to:
 
-- **Dimensions**
-  - `dim_prescriber`
-  - `dim_drug`
-  - `dim_geography`
-  - `dim_specialty`
+- Design scalable data pipelines  
+- Model data for analytical performance  
+- Translate raw data into business insights  
+- Build systems aligned with real production environments
 
-This structure enables:
+## 👤 About Me
 
-- Efficient aggregation queries
-- Flexible business analysis
-- Scalable analytics modeling
+Data professional specializing in **cloud data engineering and analytics**, with a strong focus on building scalable, production-style data platforms.
 
-Key Metrics:
-
-- Total beneficiaries → SUM(tot_benes)
-- Total providers → COUNT(DISTINCT prscrbr_npi)
----
-
-## Example Analytics Outputs
-
-### Financial Analytics
-
-- Total Medicare drug spend by state
-- Year-over-year spend trends
-- Brand vs Generic cost comparison
-- Average cost per claim by specialty
-- Highest-cost provider segments
-
-### Operational Analytics
-
-- Top prescribers by total claims
-- Top prescribers by total drug spend
-- State-level provider concentration
-- Specialty prescription volume rankings
-- Beneficiary coverage by provider type
-
-### Executive Reporting
-
-- KPI scorecards
-- Geographic spend dashboards
-- Multi-year trend analysis
-- Top 10 ranking views
-- Interactive filters by year, state, specialty, and drug type
+- **15+ years** in Business Intelligence and Analytics  
+- Experience with **AWS, Snowflake, SQL, and Python**  
+- Background in **healthcare and pharma analytics**  
+- Focused on modern data stack: ingestion, modeling, and analytics  
 
 ---
 
-## Project Status
+### What I Bring
 
-| Phase | Deliverable | Status |
-|---|---|---|
-| Snowflake Foundation | Badge 1 completed | ✅ |
-| Python + AWS S3 Ingestion | Completed | ✅ |
-| dbt Modeling Layer | In progress | 🔄 |
-| Tableau Dashboard | Planned | ⬜ |
-| SnowPro Core COF-C03 | Planned | ⬜ |
+- End-to-end thinking: from raw data ingestion to business insights  
+- Strong foundation in data modeling and analytics design  
+- Experience working with large-scale, real-world datasets  
+- Ability to translate technical solutions into business value  
 
 ---
 
-## Certifications
+### Current Focus
 
-- ✅ Snowflake Badge 1: Data Warehousing Workshop
-- ⬜ Snowflake Badge 2: Collaboration, Marketplace & Cost Estimation
-- ⬜ SnowPro Core COF-C03
-
----
-
-## Professional Background
-
-Built by a healthcare/pharma analytics professional with 20+ years of industry experience including Roche and Wyeth, transitioning into cloud data engineering and modern analytics architecture.
-
-This combination of domain expertise + technical execution creates strong value for healthcare, pharma, and analytics teams.
+- Building cloud-native analytics platforms  
+- Advancing in **Analytics Engineering and Data Engineering** roles  
+- Expanding expertise in **Snowflake, dbt, and modern data workflows**  
 
 ---
 
-## Opportunities
+📫 Connect with me on [LinkedIn](https://www.linkedin.com/in/luciana-ferreira-da-rocha/) • [GitHub](https://github.com/LucianaRocha)
 
-Open to opportunities involving:
-
-- Snowflake
-- BI Development
-- Analytics Engineering
-- Data Engineering
-- Healthcare Analytics
-
----
-
-## Why This Project Matters
-
-Many portfolio projects use toy datasets.
-
-This project uses **real healthcare data**, enterprise cloud tools, modern warehousing concepts, and business reporting scenarios that reflect real analytics work.
-
----
 
 *Repository under active development. Last updated: April 28, 2026.*
