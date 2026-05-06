@@ -1,5 +1,10 @@
 # Medicare Part D Analytics Platform
 
+
+![Medicare Part D Analytics Platform](assets/medicare-platform-banner.png)
+
+End-to-end cloud data engineering and analytics pipeline using Python, AWS, Snowflake, dbt, and Tableau.
+
 Production-style healthcare analytics platform built with a modern cloud data stack:
 
 **Python → AWS S3 → Snowflake → dbt → Tableau**
